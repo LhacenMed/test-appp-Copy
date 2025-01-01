@@ -3,8 +3,15 @@ import React from "react";
 
 const Details = () => {
   return (
-    <View>
-      <Text>Details</Text>
+    <View
+      style={{
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        paddingLeft: .1,
+      }}
+    >
+      <Text>No details here 😂😂</Text>
     </View>
   );
 };

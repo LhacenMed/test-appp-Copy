@@ -6,6 +6,8 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  TouchableOpacity,
+  Text,
 } from "react-native";
 import React, { useState } from "react";
 import { FIREBASE_AUTH } from "../../FirebaseConfig";
@@ -13,12 +15,14 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from "firebase/auth";
+import { useNavigation } from "@react-navigation/native";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const auth = FIREBASE_AUTH;
+  const navigation = useNavigation(); // For navigation between screens
 
   const signIn = async () => {
     setLoading(true);
@@ -27,7 +31,7 @@ const Login = () => {
       console.log(response);
     } catch (error: any) {
       console.log(error);
-      alert("Sign in failed: " + error.message);
+      alert("Sign in failed, " + error.message);
     } finally {
       setLoading(false);
     }
@@ -45,7 +49,7 @@ const Login = () => {
       alert("Check your emails!");
     } catch (error: any) {
       console.log(error);
-      alert("Registration failed: " + error.message);
+      alert("Registration failed, " + error.message);
     } finally {
       setLoading(false);
     }
@@ -76,6 +80,7 @@ const Login = () => {
           onChangeText={(text) => setPassword(text)}
           secureTextEntry={true}
         />
+
         {loading ? (
           <ActivityIndicator size="large" color="#0000ff" />
         ) : (
@@ -84,6 +89,14 @@ const Login = () => {
             <Button title="Create account" onPress={signUp} />
           </>
         )}
+
+        {/* Forgot Password Link */}
+        <TouchableOpacity
+          onPress={() => navigation.navigate("ForgotPassword")}
+          style={styles.forgotPasswordContainer}
+        >
+          <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
+        </TouchableOpacity>
       </ScrollView>
     </KeyboardAvoidingView>
   );
@@ -109,5 +122,12 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     padding: 10,
     backgroundColor: "#fff",
+  },
+  forgotPasswordContainer: {
+    marginTop: 10,
+  },
+  forgotPasswordText: {
+    color: "#007bff",
+    textAlign: "center",
   },
 });

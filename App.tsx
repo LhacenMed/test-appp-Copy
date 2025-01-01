@@ -7,6 +7,7 @@ import Details from "./app/screens/Details";
 import { useEffect, useState } from "react";
 import { onAuthStateChanged, User } from "firebase/auth";
 import { FIREBASE_AUTH } from "./FirebaseConfig";
+import ForgotPassword from "./app/screens/ForgotPassword";
 
 const Stack = createNativeStackNavigator();
 const InsideStack = createNativeStackNavigator();
@@ -41,11 +42,18 @@ export default function App() {
               options={{ headerShown: false }}
             />
           ) : (
-            <Stack.Screen
-              name="Login"
-              component={Login}
-              options={{ headerShown: false }}
-            />
+            <>
+              <Stack.Screen
+                name="Login"
+                component={Login}
+                options={{ headerShown: true }}
+              />
+              <Stack.Screen
+                name="ForgotPassword"
+                component={ForgotPassword}
+                options={{ headerShown: true, title: "Forgot Password" }}
+              />
+            </>
           )}
         </Stack.Navigator>
       </NavigationContainer>

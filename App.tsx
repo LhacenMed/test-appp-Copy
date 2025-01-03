@@ -19,7 +19,7 @@ import {
   SafeAreaView,
 } from "react-native";
 import { colors } from "./app/utils/colors";
-import TabLayout from "./app/screens/_layout"; // Import the new tab layout
+import TabLayout from "./app/screens/_layout";
 
 function InsideLayout() {
   return <TabLayout />;

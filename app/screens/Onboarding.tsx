@@ -1,13 +1,14 @@
 import React, { useState, useRef } from "react";
 import { View, Animated, FlatList, StyleSheet } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useNavigation } from "@react-navigation/native";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
 import OnboardingItem from "../components/OnboardingItem";
 import Paginator from "../components/Paginator";
 import NextButton from "../components/NextButton";
 import slides from "../constants/slides";
 
 import { RouteProp } from "@react-navigation/native";
+import { RootStackParamList } from "../types";
 
 type OnboardingRouteProp = RouteProp<
   { Onboarding: { onComplete: () => void } },
@@ -19,7 +20,7 @@ const Onboarding = ({ route }: { route?: OnboardingRouteProp }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const scrollX = useRef(new Animated.Value(0)).current;
   const slidesRef = useRef<FlatList<any>>(null);
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   const viewableItemsChanged = useRef(
     ({ viewableItems }: { viewableItems: Array<{ index: number | null }> }) => {
@@ -39,7 +40,7 @@ const Onboarding = ({ route }: { route?: OnboardingRouteProp }) => {
       await AsyncStorage.setItem("@viewedOnboarding", "true");
       if (onComplete) onComplete();
       console.log("Navigating to LoginSignupScreen...");
-      navigation.navigate("LoginSignupScreen"); // Navigate to login/signup
+      navigation.navigate("LoginSignupScreen");
     }
   };
 

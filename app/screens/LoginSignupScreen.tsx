@@ -2,10 +2,12 @@ import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
 import { colors } from "../utils/colors";
 import { fonts } from "../utils/fonts";
-import { useNavigation } from "@react-navigation/native";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { RootStackParamList } from "../types";
 
 const LoginSignupScreen = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   const handleLogin = () => {
     navigation.navigate("LOGIN");
@@ -14,10 +16,21 @@ const LoginSignupScreen = () => {
   const handleSignup = () => {
     navigation.navigate("SIGNUP");
   };
+  const clearOnboarding = async () => {
+    try {
+      await AsyncStorage.removeItem("@viewedOnboarding");
+    } catch (err) {
+      console.log("Error @clearOnboarding: ", err);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <Image source={require("../../assets/logo.png")} style={styles.logo} />
-      <Image source={require("../../assets/man.png")} style={styles.bannerImage} />
+      <Image
+        source={require("../../assets/man.png")}
+        style={styles.bannerImage}
+      />
       <Text style={styles.title}>Lorem ipsum dolor.</Text>
       <Text style={styles.subTitle}>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
@@ -39,6 +52,19 @@ const LoginSignupScreen = () => {
           onPress={handleSignup}
         >
           <Text style={styles.signupButtonText}>Sign-up</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={clearOnboarding}
+          style={{
+            backgroundColor: "red",
+            borderRadius: 6,
+            marginTop: 150,
+            marginBottom: 50,
+            marginLeft: -220,
+            padding: 10,
+          }}
+        >
+          <Text style={{ color: "white" }}>Clear Onboarding</Text>
         </TouchableOpacity>
       </View>
     </View>

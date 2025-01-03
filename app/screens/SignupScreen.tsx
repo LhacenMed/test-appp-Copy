@@ -24,7 +24,8 @@ import { fonts } from "../utils/fonts";
 
 import Ionicons from "react-native-vector-icons/Ionicons";
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
-import { useNavigation } from "@react-navigation/native";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { RootStackParamList } from "../types";
 
 const SignupScreen = () => {
   const [email, setEmail] = useState("");
@@ -32,7 +33,7 @@ const SignupScreen = () => {
   const [userName, setUserName] = useState("");
   const [loading, setLoading] = useState(false);
   const auth = FIREBASE_AUTH;
-  const navigation = useNavigation(); // For navigation between screens
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   const signIn = async () => {
     setLoading(true);

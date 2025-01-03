@@ -19,18 +19,24 @@ import {
   SafeAreaView,
 } from "react-native";
 import { colors } from "./app/utils/colors";
+import TabLayout from "./app/screens/_layout"; // Import the new tab layout
+
+function InsideLayout() {
+  return <TabLayout />;
+}
+
 
 const Stack = createNativeStackNavigator();
 const InsideStack = createNativeStackNavigator();
 
-function InsideLayout() {
-  return (
-    <InsideStack.Navigator>
-      <InsideStack.Screen name="My todos" component={List} />
-      <InsideStack.Screen name="Details" component={Details} />
-    </InsideStack.Navigator>
-  );
-}
+// function InsideLayout() {
+//   return (
+//     <InsideStack.Navigator>
+//       <InsideStack.Screen name="My todos" component={List} />
+//       <InsideStack.Screen name="Details" component={Details} />
+//     </InsideStack.Navigator>
+//   );
+// }
 
 export default function App() {
   const [user, setUser] = useState<User | null>(null);

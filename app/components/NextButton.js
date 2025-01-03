@@ -34,10 +34,10 @@ export default NextButton = ({ percentage, scrollTo }) => {
 
   return (
     <View style={styles.container}>
-      <Svg width={size} height={size} fill="white">
+      <Svg width={size} height={size} fill="none">
         <G rotation="-90" origin={center}>
           <Circle
-            stroke="white"
+            stroke="none"
             cx={center}
             cy={center}
             r={radius}

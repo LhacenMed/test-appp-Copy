@@ -2,8 +2,18 @@ import { View, Text, StyleSheet, TouchableOpacity, Button } from "react-native";
 import React from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { FIREBASE_AUTH } from "../../FirebaseConfig";
+import { NavigationProp } from "@react-navigation/native";
+import { useNavigation } from "expo-router";
 
-const Page = () => {
+interface RouterProps {
+  navigation: NavigationProp<any, any>;
+}
+
+
+const Page = ({ navigation }: RouterProps) => {
+  const navigateToSplash = () => {
+    navigation.navigate("Splash");
+  }
   const clearOnboarding = async () => {
     try {
       await AsyncStorage.removeItem("@viewedOnboarding");
@@ -15,6 +25,7 @@ const Page = () => {
   return (
     <View style={styles.container}>
       <Text>Home Screen</Text>
+      <Button onPress={navigateToSplash} title="Open splash" />
       <TouchableOpacity
         onPress={clearOnboarding}
         style={{
@@ -28,7 +39,6 @@ const Page = () => {
         <Text style={{ color: "white" }}>Clear Onboarding</Text>
       </TouchableOpacity>
       <Button onPress={() => FIREBASE_AUTH.signOut()} title="Logout" />
-      
     </View>
   );
 };

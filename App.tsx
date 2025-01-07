@@ -20,28 +20,49 @@ import {
 } from "react-native";
 import { colors } from "./app/utils/colors";
 import TabLayout from "./app/screens/_layout";
+import * as SplashScreen from "expo-splash-screen";
+import Splash from "./app/screens/Splash";
 
-function InsideLayout() {
-  return <TabLayout />;
-}
+import {
+  useFonts,
+  Inter_900Black,
+  Inter_600SemiBold,
+  Inter_700Bold,
+  Inter_400Regular,
+} from "@expo-google-fonts/inter";
+import {
+  AmaticSC_400Regular,
+  AmaticSC_700Bold,
+} from "@expo-google-fonts/amatic-sc";
 
+// SplashScreen.preventAutoHideAsync();
 
 const Stack = createNativeStackNavigator();
 const InsideStack = createNativeStackNavigator();
 
-// function InsideLayout() {
-//   return (
-//     <InsideStack.Navigator>
-//       <InsideStack.Screen name="My todos" component={List} />
-//       <InsideStack.Screen name="Details" component={Details} />
-//     </InsideStack.Navigator>
-//   );
-// }
+function InsideLayout() {
+  return (
+    <>
+      <TabLayout />
+    </>
+  );
+}
 
 export default function App() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [appReady, setAppReady] = useState(false);
+  const [splashAnimationFinished, setSplashAnimationFinished] = useState(false);
   const [viewedOnboarding, setViewedOnboarding] = useState(false);
+
+  const [fontsLoaded, fontError] = useFonts({
+    Inter: Inter_400Regular,
+    InterSemi: Inter_600SemiBold,
+    InterBold: Inter_700Bold,
+    InterBlack: Inter_900Black,
+    Amatic: AmaticSC_400Regular,
+    AmaticBold: AmaticSC_700Bold,
+  });
 
   useEffect(() => {
     const checkOnboarding = async () => {
@@ -59,11 +80,30 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    onAuthStateChanged(FIREBASE_AUTH, (user) => {
-      console.log("user", user);
+    if (fontsLoaded || fontError) {
+      setAppReady(true);
+    }
+  }, [fontsLoaded, fontError]);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, (user) => {
       setUser(user);
+      setLoading(false); // Update loading to false here
     });
+    return unsubscribe;
   }, []);
+
+  if (!appReady || !splashAnimationFinished) {
+    return (
+      <Splash
+        onAnimationFinish={(isCancelled) => {
+          if (!isCancelled) {
+            setSplashAnimationFinished(true);
+          }
+        }}
+      />
+    );
+  }
 
   if (loading) {
     return (
@@ -79,7 +119,11 @@ export default function App() {
       <NavigationContainer>
         <Stack.Navigator
           initialRouteName={
-            viewedOnboarding ? "LoginSignupScreen" : "Onboarding"
+            user
+              ? "Inside"
+              : viewedOnboarding
+              ? "LoginSignupScreen"
+              : "Onboarding"
           }
         >
           {!user ? (
@@ -111,17 +155,26 @@ export default function App() {
               />
             </>
           ) : (
-            <Stack.Screen
-              name="Inside"
-              component={InsideLayout}
-              options={{ headerShown: false }}
-            />
+            <>
+              <Stack.Screen
+                name="Inside"
+                component={InsideLayout}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="Splash"
+                component={Splash}
+                options={{ headerShown: false }}
+              />
+            </>
           )}
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaView>
   );
 }
+
+
 
 const styles = StyleSheet.create({
   container: {

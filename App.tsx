@@ -163,9 +163,19 @@ export default function App() {
               />
               <Stack.Screen
                 name="Splash"
-                component={Splash}
                 options={{ headerShown: false }}
-              />
+              >
+                {(props) => (
+                  <Splash
+                    {...props}
+                    onAnimationFinish={(isCancelled) => {
+                      if (!isCancelled) {
+                        setSplashAnimationFinished(true);
+                      }
+                    }}
+                  />
+                )}
+              </Stack.Screen>
             </>
           )}
         </Stack.Navigator>

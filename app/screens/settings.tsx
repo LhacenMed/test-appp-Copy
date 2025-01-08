@@ -39,7 +39,7 @@ const Page = () => {
         backgroundColorAnimation,
       ]}
     >
-      <Text>Settings Screen</Text>
+      <Text style={{color: "silver"}}>Settings Screen</Text>
       <SystemBars
         animated={true}
         barStyle={theme === "dark" ? "light-content" : "dark-content"}

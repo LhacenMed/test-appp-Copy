@@ -1,7 +1,11 @@
-import { NavigationContainer } from "@react-navigation/native";
+import {
+  NavigationContainer,
+  DarkTheme,
+  DefaultTheme,
+} from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { StatusBar } from "expo-status-bar";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { onAuthStateChanged, User } from "firebase/auth";
 import { FIREBASE_AUTH } from "./FirebaseConfig";
 import ForgotPassword from "./app/screens/ForgotPassword";
@@ -10,11 +14,7 @@ import SignupScreen from "./app/screens/SignupScreen";
 import LoginSignupScreen from "./app/screens/LoginSignupScreen";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Onboarding from "./app/screens/Onboarding";
-import {
-  ActivityIndicator,
-  View,
-  StyleSheet,
-} from "react-native";
+import { ActivityIndicator, View, StyleSheet } from "react-native";
 import { colors } from "./app/utils/colors";
 import TabLayout from "./app/screens/_layout";
 import Splash from "./app/screens/Splash";
@@ -38,6 +38,10 @@ import {
   useSafeAreaInsets,
 } from "react-native-safe-area-context";
 
+import { ThemeProvider, ThemeContext } from "./context/ThemeContext";
+
+import { useColorScheme } from "react-native";
+
 const Stack = createNativeStackNavigator();
 const InsideStack = createNativeStackNavigator();
 
@@ -50,6 +54,7 @@ function InsideLayout() {
 }
 
 export default function App() {
+  const colorScheme = useColorScheme();
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [appReady, setAppReady] = useState(false);
@@ -91,7 +96,7 @@ export default function App() {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, (user) => {
       setUser(user);
-      setLoading(false); // Update loading to false here
+      setLoading(false);
     });
     return unsubscribe;
   }, []);
@@ -116,14 +121,14 @@ export default function App() {
     );
   }
 
-  
+  const navigationTheme = colorScheme === "dark" ? DarkTheme : DefaultTheme;
 
   return (
     <GestureHandlerRootView style={styles.container}>
       <SafeAreaProvider>
         <>
-          <StatusBar style="dark" />
-          <NavigationContainer>
+          <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
+          <NavigationContainer theme={navigationTheme}>
             <Stack.Navigator
               initialRouteName={
                 user
@@ -189,8 +194,6 @@ export default function App() {
     </GestureHandlerRootView>
   );
 }
-
-
 
 const styles = StyleSheet.create({
   container: {

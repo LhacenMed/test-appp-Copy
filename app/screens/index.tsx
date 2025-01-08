@@ -3,17 +3,15 @@ import React from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { FIREBASE_AUTH } from "../../FirebaseConfig";
 import { NavigationProp } from "@react-navigation/native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 interface RouterProps {
   navigation: NavigationProp<any, any>;
 }
 
-
 const Page = ({ navigation }: RouterProps) => {
   const navigateToSplash = () => {
     navigation.navigate("Splash");
-  }
+  };
   const clearOnboarding = async () => {
     try {
       await AsyncStorage.removeItem("@viewedOnboarding");
@@ -22,23 +20,8 @@ const Page = ({ navigation }: RouterProps) => {
     }
   };
 
-  const handleLogout = async () => {
-    try {
-      await FIREBASE_AUTH.signOut();
-      await AsyncStorage.setItem("@viewedOnboarding", "true"); // Optional
-      navigation.reset({
-        index: 0,
-        routes: [{ name: "LoginSignupScreen" }], // Reset stack to login/signup
-      });
-    } catch (error) {
-      console.error("Error during logout", error);
-    }
-  };
-
-  const insets = useSafeAreaInsets();
-
   return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
+    <View style={styles.container}>
       <Text>Home Screen</Text>
       <Button onPress={navigateToSplash} title="Open splash" />
       <TouchableOpacity
@@ -53,7 +36,7 @@ const Page = ({ navigation }: RouterProps) => {
       >
         <Text style={{ color: "white" }}>Clear Onboarding</Text>
       </TouchableOpacity>
-      <Button onPress={handleLogout} title="Logout" />
+      <Button onPress={() => FIREBASE_AUTH.signOut()} title="Logout" />
     </View>
   );
 };

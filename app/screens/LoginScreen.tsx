@@ -22,6 +22,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { RootStackParamList } from "../types";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const LoginScreen = () => {
   const [email, setEmail] = useState("");
@@ -52,8 +53,10 @@ const LoginScreen = () => {
     navigation.navigate("SIGNUP");
   };
 
+  const insets = useSafeAreaInsets();
+
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { paddingTop: insets.top }]}>
       <TouchableOpacity style={styles.backButtonWrapper} onPress={handleGoBack}>
         <Ionicons
           name={"arrow-back-outline"}

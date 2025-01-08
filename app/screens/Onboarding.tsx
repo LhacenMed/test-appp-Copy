@@ -9,6 +9,7 @@ import slides from "../constants/slides";
 
 import { RouteProp } from "@react-navigation/native";
 import { RootStackParamList } from "../types";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 type OnboardingRouteProp = RouteProp<
   { Onboarding: { onComplete: () => void } },
@@ -44,8 +45,10 @@ const Onboarding = ({ route }: { route?: OnboardingRouteProp }) => {
     }
   };
 
+  const insets = useSafeAreaInsets();
+
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { paddingTop: insets.top }]}>
       <View style={{ flex: 3 }}>
         <FlatList
           data={slides}

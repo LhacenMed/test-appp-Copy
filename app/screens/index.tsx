@@ -3,7 +3,7 @@ import React from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { FIREBASE_AUTH } from "../../FirebaseConfig";
 import { NavigationProp } from "@react-navigation/native";
-import { useNavigation } from "expo-router";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 interface RouterProps {
   navigation: NavigationProp<any, any>;
@@ -35,8 +35,10 @@ const Page = ({ navigation }: RouterProps) => {
     }
   };
 
+  const insets = useSafeAreaInsets();
+
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { paddingTop: insets.top }]}>
       <Text>Home Screen</Text>
       <Button onPress={navigateToSplash} title="Open splash" />
       <TouchableOpacity

@@ -5,6 +5,7 @@ import { fonts } from "../utils/fonts";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { RootStackParamList } from "../types";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const LoginSignupScreen = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
@@ -24,8 +25,10 @@ const LoginSignupScreen = () => {
     }
   };
 
+  const insets = useSafeAreaInsets();
+
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { paddingTop: insets.top }]}>
       <Image source={require("../../assets/logo.png")} style={styles.logo} />
       <Image
         source={require("../../assets/man.png")}

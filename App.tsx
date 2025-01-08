@@ -14,7 +14,6 @@ import {
   ActivityIndicator,
   View,
   StyleSheet,
-  SafeAreaView,
 } from "react-native";
 import { colors } from "./app/utils/colors";
 import TabLayout from "./app/screens/_layout";
@@ -31,6 +30,13 @@ import {
   AmaticSC_400Regular,
   AmaticSC_700Bold,
 } from "@expo-google-fonts/amatic-sc";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import {
+  SafeAreaView,
+  SafeAreaProvider,
+  SafeAreaInsetsContext,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
 
 const Stack = createNativeStackNavigator();
 const InsideStack = createNativeStackNavigator();
@@ -110,74 +116,77 @@ export default function App() {
     );
   }
 
+  
+
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar style="dark" />
-      <NavigationContainer>
-        <Stack.Navigator
-          initialRouteName={
-            user
-              ? "Inside"
-              : viewedOnboarding
-              ? "LoginSignupScreen"
-              : "Onboarding"
-          }
-        >
-          {!user ? (
-            <>
-              <Stack.Screen
-                name="Onboarding"
-                component={Onboarding}
-                options={{ headerShown: false }}
-              />
-              <Stack.Screen
-                name="LoginSignupScreen"
-                component={LoginSignupScreen}
-                options={{ headerShown: false }}
-              />
-              <Stack.Screen
-                name="LOGIN"
-                component={LoginScreen}
-                options={{ headerShown: false }}
-              />
-              <Stack.Screen
-                name="SIGNUP"
-                component={SignupScreen}
-                options={{ headerShown: false }}
-              />
-              <Stack.Screen
-                name="ForgotPassword"
-                component={ForgotPassword}
-                options={{ headerShown: true, title: "Forgot Password" }}
-              />
-            </>
-          ) : (
-            <>
-              <Stack.Screen
-                name="Inside"
-                component={InsideLayout}
-                options={{ headerShown: false }}
-              />
-              <Stack.Screen
-                name="Splash"
-                options={{ headerShown: false }}
-              >
-                {(props) => (
-                  <Splash
-                    {...props}
-                    onAnimationFinish={(isCancelled) => {
-                      if (!isCancelled) {
-                        setSplashAnimationFinished(true);
-                      }
-                    }}
+    <GestureHandlerRootView style={styles.container}>
+      <SafeAreaProvider>
+        <>
+          <StatusBar style="dark" />
+          <NavigationContainer>
+            <Stack.Navigator
+              initialRouteName={
+                user
+                  ? "Inside"
+                  : viewedOnboarding
+                  ? "LoginSignupScreen"
+                  : "Onboarding"
+              }
+            >
+              {!user ? (
+                <>
+                  <Stack.Screen
+                    name="Onboarding"
+                    component={Onboarding}
+                    options={{ headerShown: false }}
                   />
-                )}
-              </Stack.Screen>
-            </>
-          )}
-        </Stack.Navigator>
-      </NavigationContainer>
-    </SafeAreaView>
+                  <Stack.Screen
+                    name="LoginSignupScreen"
+                    component={LoginSignupScreen}
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen
+                    name="LOGIN"
+                    component={LoginScreen}
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen
+                    name="SIGNUP"
+                    component={SignupScreen}
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen
+                    name="ForgotPassword"
+                    component={ForgotPassword}
+                    options={{ headerShown: true, title: "Forgot Password" }}
+                  />
+                </>
+              ) : (
+                <>
+                  <Stack.Screen
+                    name="Inside"
+                    component={InsideLayout}
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen name="Splash" options={{ headerShown: false }}>
+                    {(props) => (
+                      <Splash
+                        {...props}
+                        onAnimationFinish={(isCancelled) => {
+                          if (!isCancelled) {
+                            setSplashAnimationFinished(true);
+                          }
+                        }}
+                      />
+                    )}
+                  </Stack.Screen>
+                </>
+              )}
+            </Stack.Navigator>
+          </NavigationContainer>
+        </>
+      </SafeAreaProvider>
+    </GestureHandlerRootView>
   );
 }
 

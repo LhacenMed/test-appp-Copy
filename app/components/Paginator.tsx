@@ -1,7 +1,12 @@
 import React from "react";
 import { StyleSheet, View, Animated, useWindowDimensions } from "react-native";
 
-export default Paginator = ({ data, scrollX }) => {
+interface PaginatorProps {
+  data: any[];
+  scrollX: Animated.Value;
+}
+
+const Paginator: React.FC<PaginatorProps> = ({ data, scrollX }) => {
   const { width } = useWindowDimensions();
   return (
     <View style={{ flexDirection: "row", height: 64 }}>
@@ -30,6 +35,8 @@ export default Paginator = ({ data, scrollX }) => {
     </View>
   );
 };
+
+export default Paginator;
 
 const styles = StyleSheet.create({
   dot: {

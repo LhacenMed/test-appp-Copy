@@ -6,10 +6,6 @@ import {
   TouchableOpacity,
   View,
   ActivityIndicator,
-  Button,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
 } from "react-native";
 
 import React, { useState } from "react";
@@ -42,24 +38,6 @@ const LoginScreen = () => {
     } catch (error: any) {
       console.log(error);
       alert("Sign in failed, " + error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const signUp = async () => {
-    setLoading(true);
-    try {
-      const response = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-      console.log(response);
-      alert("Check your emails!");
-    } catch (error: any) {
-      console.log(error);
-      alert("Registration failed, " + error.message);
     } finally {
       setLoading(false);
     }

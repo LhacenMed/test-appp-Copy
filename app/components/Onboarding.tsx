@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import { View, Text, StyleSheet, FlatList, Animated } from "react-native";
+import { View, StyleSheet, FlatList, Animated } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "expo-router";
 
@@ -8,14 +8,17 @@ import Paginator from "./Paginator";
 import NextButton from "./NextButton";
 import slides from "../constants/slides";
 
-export default Onboarding = () => {
+const Onboarding = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const scrollX = useRef(new Animated.Value(0)).current;
-  const slidesRef = useRef(null);
+  const slidesRef = useRef<FlatList<any>>(null);
   const navigation = useNavigation();
 
-  const viewableItemsChanged = useRef(({ viewableItems }) => {
-    setCurrentIndex(viewableItems[0].index);
+  const viewableItemsChanged = useRef(({ viewableItems }: { viewableItems: Array<{ index: number | null }> }) => {
+    const index = viewableItems[0]?.index;
+    if (index !== null && index !== undefined) {
+      setCurrentIndex(index);
+    }
   }).current;
 
   const viewConfig = useRef({ viewAreaCoveragePercentThreshold: 50 }).current;
@@ -23,7 +26,7 @@ export default Onboarding = () => {
   const scrollTo = async () => {
     console.log("NextButton clicked! Current Index:", currentIndex); // Debug log
     if (currentIndex < slides.length - 1) {
-      slidesRef.current.scrollToIndex({ index: currentIndex + 1 });
+      slidesRef.current?.scrollToIndex({ index: currentIndex + 1 });
     } else {
       console.log("Last slide reached. Navigating to the home screen...");
       try {
@@ -31,10 +34,10 @@ export default Onboarding = () => {
       } catch (err) {
         console.log("Error @setItem: ", err);
       }
-      navigation.replace("index"); // Ensure "index" matches your home route
+      navigation.navigate("index" as never); // Ensure "index" matches your home route
     }
   };
-
+  
   return (
     <View style={styles.container}>
       <View style={{ flex: 3 }}>
@@ -66,6 +69,8 @@ export default Onboarding = () => {
     </View>
   );
 };
+
+export default Onboarding;
 
 const styles = StyleSheet.create({
   container: {

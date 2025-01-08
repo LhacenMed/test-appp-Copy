@@ -57,10 +57,11 @@ const LoginSignupScreen = () => {
           onPress={clearOnboarding}
           style={{
             backgroundColor: "red",
+            height: 40,
             borderRadius: 6,
             marginTop: 150,
-            marginBottom: 50,
-            marginLeft: -220,
+            marginBottom: 150,
+            marginLeft: "-70%",
             padding: 10,
           }}
         >

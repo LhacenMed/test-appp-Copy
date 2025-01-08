@@ -22,6 +22,19 @@ const Page = ({ navigation }: RouterProps) => {
     }
   };
 
+  const handleLogout = async () => {
+    try {
+      await FIREBASE_AUTH.signOut();
+      await AsyncStorage.setItem("@viewedOnboarding", "true"); // Optional
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "LoginSignupScreen" }], // Reset stack to login/signup
+      });
+    } catch (error) {
+      console.error("Error during logout", error);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <Text>Home Screen</Text>
@@ -38,7 +51,7 @@ const Page = ({ navigation }: RouterProps) => {
       >
         <Text style={{ color: "white" }}>Clear Onboarding</Text>
       </TouchableOpacity>
-      <Button onPress={() => FIREBASE_AUTH.signOut()} title="Logout" />
+      <Button onPress={handleLogout} title="Logout" />
     </View>
   );
 };

@@ -6,10 +6,6 @@ import {
   TouchableOpacity,
   View,
   ActivityIndicator,
-  Button,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
 } from "react-native";
 
 import React, { useState } from "react";
@@ -34,19 +30,6 @@ const SignupScreen = () => {
   const [loading, setLoading] = useState(false);
   const auth = FIREBASE_AUTH;
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-
-  const signIn = async () => {
-    setLoading(true);
-    try {
-      const response = await signInWithEmailAndPassword(auth, email, password);
-      console.log(response);
-    } catch (error: any) {
-      console.log(error);
-      alert("Sign in failed, " + error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const signUp = async () => {
     setLoading(true);

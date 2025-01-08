@@ -1,8 +1,6 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { StatusBar } from "expo-status-bar";
-import List from "./app/screens/List";
-import Details from "./app/screens/Details";
 import { useEffect, useState } from "react";
 import { onAuthStateChanged, User } from "firebase/auth";
 import { FIREBASE_AUTH } from "./FirebaseConfig";
@@ -20,7 +18,6 @@ import {
 } from "react-native";
 import { colors } from "./app/utils/colors";
 import TabLayout from "./app/screens/_layout";
-import * as SplashScreen from "expo-splash-screen";
 import Splash from "./app/screens/Splash";
 
 import {
@@ -34,8 +31,6 @@ import {
   AmaticSC_400Regular,
   AmaticSC_700Bold,
 } from "@expo-google-fonts/amatic-sc";
-
-// SplashScreen.preventAutoHideAsync();
 
 const Stack = createNativeStackNavigator();
 const InsideStack = createNativeStackNavigator();
@@ -65,18 +60,20 @@ export default function App() {
   });
 
   useEffect(() => {
-    const checkOnboarding = async () => {
+    const checkOnboardingStatus = async () => {
       try {
         const value = await AsyncStorage.getItem("@viewedOnboarding");
-        setViewedOnboarding(!!value);
-      } catch (err) {
-        console.log("Error @checkOnboarding: ", err);
+        if (value !== null) {
+          setViewedOnboarding(true);
+        }
+      } catch (error) {
+        console.error("Failed to fetch onboarding status", error);
       } finally {
         setLoading(false);
       }
     };
 
-    checkOnboarding();
+    checkOnboardingStatus();
   }, []);
 
   useEffect(() => {

@@ -7,7 +7,15 @@ import {
   useWindowDimensions,
 } from "react-native";
 
-export default OnboardingItem = ({ item }) => {
+interface OnboardingItemProps {
+  item: {
+    image: any;
+    title: string;
+    description: string;
+  };
+}
+
+const OnboardingItem: React.FC<OnboardingItemProps> = ({ item }) => {
   const { width } = useWindowDimensions();
 
   return (
@@ -24,6 +32,8 @@ export default OnboardingItem = ({ item }) => {
     </View>
   );
 };
+
+export default OnboardingItem;
 
 const styles = StyleSheet.create({
   container: {

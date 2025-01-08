@@ -1,17 +1,17 @@
 import React, { useEffect, useRef } from "react";
-import { StyleSheet, TouchableOpacity, View, Text, Animated } from "react-native";
+import { StyleSheet, TouchableOpacity, View, Animated } from "react-native";
 import Svg, { G, Circle } from "react-native-svg";
 import { AntDesign } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
-
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
-export default NextButton = ({ percentage, scrollTo }) => {
-  const navigation = useNavigation();
-  const handleHome = () => {
-    navigation.navigate("Inside");
-  };
+interface NextButtonProps {
+  percentage: number;
+  scrollTo: () => void;
+}
+
+const NextButton: React.FC<NextButtonProps> = ({ percentage, scrollTo }) => {
+
   const size = 128;
   const strokeWidth = 2;
   const center = size / 2;
@@ -20,7 +20,7 @@ export default NextButton = ({ percentage, scrollTo }) => {
 
   const progressAnimation = useRef(new Animated.Value(0)).current;
 
-  const animation = (toValue) => {
+  const animation = (toValue: number) => {
     return Animated.timing(progressAnimation, {
       toValue,
       duration: 250,
@@ -67,6 +67,8 @@ export default NextButton = ({ percentage, scrollTo }) => {
     </View>
   );
 };
+
+export default NextButton;
 
 const styles = StyleSheet.create({
   container: {

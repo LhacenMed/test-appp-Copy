@@ -1,15 +1,13 @@
 import {
   View,
-  Text,
-  TouchableOpacity,
   StyleSheet,
   LayoutChangeEvent,
 } from "react-native";
-import { Feather } from "@expo/vector-icons";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import TabBarButton from "./TabBarButton";
 import { useState } from "react";
 import Animated, {
+  ReduceMotion,
   useAnimatedStyle,
   useSharedValue,
   withSpring,
@@ -67,7 +65,16 @@ export default function TabBar({
 
         const onPress = () => {
           tabPositionX.value = withSpring(buttonWidth * index, {
-            duration: 1500,
+            ...({
+              // duration: 1500,
+              stiffness: 250, // Controls the bounciness of the spring
+              damping: 23, // Controls how quickly the spring comes to rest
+              mass: 1, // Adjusts the "weight" of the spring
+              overshootClamping: false, // Allows overshooting the target value
+              restDisplacementThreshold: 0.01, // Displacement threshold to stop animation
+              restSpeedThreshold: 2, // Speed threshold to stop animation
+              reduceMotion: ReduceMotion.System,
+            } as any),
           });
           const event = navigation.emit({
             type: "tabPress",

@@ -38,9 +38,6 @@ import {
   useSafeAreaInsets,
 } from "react-native-safe-area-context";
 
-import { ThemeProvider, ThemeContext } from "./context/ThemeContext";
-
-import { useColorScheme } from "react-native";
 
 const Stack = createNativeStackNavigator();
 const InsideStack = createNativeStackNavigator();
@@ -54,7 +51,6 @@ function InsideLayout() {
 }
 
 export default function App() {
-  const colorScheme = useColorScheme();
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [appReady, setAppReady] = useState(false);
@@ -121,14 +117,12 @@ export default function App() {
     );
   }
 
-  const navigationTheme = colorScheme === "dark" ? DarkTheme : DefaultTheme;
-
   return (
     <GestureHandlerRootView style={styles.container}>
       <SafeAreaProvider>
         <>
-          <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
-          <NavigationContainer theme={navigationTheme}>
+          <StatusBar style={"dark"} />
+          <NavigationContainer>
             <Stack.Navigator
               initialRouteName={
                 user

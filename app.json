@@ -4,9 +4,9 @@
     "slug": "Firebase-auth-login-app",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/logo5.png",
+    "icon": "./assets/logo6.png",
     "userInterfaceStyle": "light",
-    "newArchEnabled": true,
+    "newArchEnabled": false,
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",

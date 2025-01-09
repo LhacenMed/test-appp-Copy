@@ -130,7 +130,7 @@ const LoginScreen = () => {
         <TouchableOpacity style={styles.googleButtonContainer}>
           <Image
             source={require("../../assets/google.png")}
-            style={styles.googleImage}
+            style={{ height: 20, width: 20 }}
           />
           <Text style={styles.googleText}>Google</Text>
         </TouchableOpacity>

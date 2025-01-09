@@ -5,6 +5,10 @@ import {
 } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { StatusBar } from "expo-status-bar";
+import {
+  createStackNavigator,
+  TransitionPresets,
+} from "@react-navigation/stack";
 import { useEffect, useState, useMemo } from "react";
 import { onAuthStateChanged, User } from "firebase/auth";
 import { FIREBASE_AUTH } from "./FirebaseConfig";
@@ -37,9 +41,11 @@ import {
   SafeAreaInsetsContext,
   useSafeAreaInsets,
 } from "react-native-safe-area-context";
+import WelcomeScreen from "@/screens/WelcomeScreen";
 
 
-const Stack = createNativeStackNavigator();
+
+const Stack = createStackNavigator();
 const InsideStack = createNativeStackNavigator();
 
 function InsideLayout() {
@@ -179,6 +185,11 @@ export default function App() {
                       />
                     )}
                   </Stack.Screen>
+                  <Stack.Screen
+                    name="WelcomeScreen"
+                    component={WelcomeScreen}
+                    options={{ headerShown: false, ...TransitionPresets.SlideFromRightIOS }}
+                  />
                 </>
               )}
             </Stack.Navigator>

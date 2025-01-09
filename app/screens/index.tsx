@@ -12,6 +12,9 @@ const Page = ({ navigation }: RouterProps) => {
   const navigateToSplash = () => {
     navigation.navigate("Splash");
   };
+  const navigateToWelcomeScreen = () => {
+    navigation.navigate("WelcomeScreen");
+  };
   const clearOnboarding = async () => {
     try {
       await AsyncStorage.removeItem("@viewedOnboarding");
@@ -37,6 +40,7 @@ const Page = ({ navigation }: RouterProps) => {
     <View style={styles.container}>
       <Text>Home Screen</Text>
       <Button onPress={navigateToSplash} title="Open splash" />
+      <Button onPress={navigateToWelcomeScreen} title="Open welcome screen" />
       <TouchableOpacity
         onPress={clearOnboarding}
         style={{

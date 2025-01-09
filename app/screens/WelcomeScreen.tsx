@@ -1,0 +1,266 @@
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  Image,
+  ScrollView,
+} from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import * as Font from "expo-font";
+import CustomText from "@/components/CustomText";
+import CustomTouchable from "@/components/CustomTouchable";
+
+import { colors } from "../utils/colors";
+import { fonts } from "../utils/fonts";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { RootStackParamList } from "../types";
+
+export default function WelcomeScreen() {
+  const [fontsLoaded, setFontsLoaded] = useState(false);
+
+  useEffect(() => {
+    let isMounted = true;
+    async function loadFonts() {
+      await Font.loadAsync({
+        "Outfit-Regular": require("../../assets/fonts/OutfitMedium.ttf"),
+      });
+      if (isMounted) setFontsLoaded(true);
+    }
+    loadFonts();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const insets = useSafeAreaInsets();
+
+  if (!fontsLoaded) {
+    return null; // You can return a loading spinner here
+  }
+
+  const handleGoogleSignUp = () => {
+    // Implement Google sign up
+    console.log("Google sign up pressed");
+  };
+
+  const handleAppleSignUp = () => {
+    // Implement Apple sign up
+    console.log("Apple sign up pressed");
+  };
+
+  const handleFacebookSignUp = () => {
+    // Implement Facebook sign up
+    console.log("Facebook sign up pressed");
+  };
+
+  const handleCreateAccount = () => {
+    // Implement email sign up
+    console.log("Create account pressed");
+  };
+
+  const handleLogin = () => {
+    // Navigate to sign in screen
+    console.log("Login pressed");
+  };
+
+  const containerStyle = [
+    styles.container,
+    {
+      paddingTop: insets.top,
+    },
+  ];
+
+  return (
+      <SafeAreaView style={containerStyle}>
+        <View style={styles.content}>
+          <CustomText style={styles.title}>Explore now</CustomText>
+          <CustomText style={styles.subtitle}>Join us today.</CustomText>
+          <CustomTouchable
+            style={[styles.socialButton, styles.googleButton]}
+            onPress={handleGoogleSignUp}
+          >
+            <Image
+              source={require("../../assets/google.png")}
+              style={styles.socialIcon}
+            />
+            <CustomText style={styles.socialButtonText}>Sign up with Google</CustomText>
+          </CustomTouchable>
+          <CustomTouchable
+            style={[styles.socialButton, styles.appleButton]}
+            onPress={handleAppleSignUp}
+          >
+            <Image
+              source={require("../../assets/apple.png")}
+              style={styles.socialIcon}
+            />
+            <CustomText style={styles.socialButtonText}>Sign up with Apple</CustomText>
+          </CustomTouchable>
+          <CustomTouchable
+            style={[styles.socialButton, styles.facebookButton]}
+            onPress={handleFacebookSignUp}
+          >
+            <Image
+              source={require("../../assets/facebook.png")}
+              style={styles.socialIcon}
+            />
+            <CustomText style={styles.socialButtonText}>Sign up with Facebook</CustomText>
+          </CustomTouchable>
+          <View style={styles.dividerContainer}>
+            <View style={styles.divider} />
+            <CustomText style={styles.dividerText}>or</CustomText>
+            <View style={styles.divider} />
+          </View>
+          <CustomTouchable
+            style={styles.createAccountButton}
+            onPress={handleCreateAccount}
+          >
+            <CustomText style={styles.createAccountButtonText}>Create an account</CustomText>
+          </CustomTouchable>
+          <View style={styles.signInContainer}>
+            <CustomText style={styles.signInText}>Already have an account? </CustomText>
+          </View>
+          <CustomTouchable style={styles.loginButton} onPress={handleLogin}>
+            <CustomText style={styles.loginButtonText}>Login</CustomText>
+          </CustomTouchable>
+          <CustomText style={styles.termsText}>
+            By signing up, you agree to the{" "}
+            <CustomText
+              style={styles.link}
+              onPress={() => console.log("Terms of Service pressed")}
+            >
+              Terms of Service
+            </CustomText>{" "}
+            and{" "}
+            <CustomText
+              style={styles.link}
+              onPress={() => console.log("Privacy Policy pressed")}
+            >
+              Privacy Policy
+            </CustomText>
+            , including{" "}
+            <CustomText
+              style={styles.link}
+              onPress={() => console.log("Cookie Use pressed")}
+            >
+              Cookie Use
+            </CustomText>
+            .
+          </CustomText>
+        </View>
+      </SafeAreaView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+  },
+  content: {
+    padding: 24,
+    flex: 1,
+  },
+  title: {
+    fontSize: 40,
+    fontWeight: "bold",
+    marginBottom: 8,
+  },
+  subtitle: {
+    fontSize: 24,
+    marginBottom: 32,
+  },
+  socialButton: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
+    borderRadius: 50,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: "#e1e1e1",
+  },
+  googleButton: {
+    backgroundColor: "#fff",
+  },
+  appleButton: {
+    backgroundColor: "#fff",
+  },
+  facebookButton: {
+    backgroundColor: "#fff",
+  },
+  socialIcon: {
+    height: 25,
+    width: 25,
+    marginRight: 15,
+  },
+  socialButtonText: {
+    fontSize: 20,
+    fontWeight: "500",
+    lineHeight: 27,
+  },
+  dividerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginVertical: 24,
+  },
+  divider: {
+    flex: 1,
+    height: 1,
+    backgroundColor: "#e1e1e1",
+  },
+  dividerText: {
+    fontSize: 15,
+    marginHorizontal: 16,
+    color: "#000",
+    lineHeight: 27,
+  },
+  createAccountButton: {
+    backgroundColor: "#0098FF",
+    padding: 20,
+    borderRadius: 50,
+    alignItems: "center",
+  },
+  loginButton: {
+    padding: 20,
+    borderRadius: 50,
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#e1e1e1",
+  },
+  createAccountButtonText: {
+    color: "#fff",
+    fontSize: 20,
+    // fontWeight: "600",
+    lineHeight: 27,
+  },
+  loginButtonText: {
+    color: "#0098FF",
+    fontSize: 20,
+    // fontWeight: "600",
+    lineHeight: 27,
+  },
+  signInContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    marginTop: 24,
+    marginBottom: 24,
+  },
+  signInText: {
+    color: "#000",
+    fontSize: 15,
+  },
+  termsText: {
+    fontSize: 12.5,
+    color: "#666",
+    textAlign: "center",
+    margin: 24,
+    lineHeight: 18,
+  },
+  link: {
+    color: "#000",
+    textDecorationLine: "underline",
+  },
+});

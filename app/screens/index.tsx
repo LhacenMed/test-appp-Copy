@@ -1,5 +1,5 @@
+import React, { useContext } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Button } from "react-native";
-import React from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { FIREBASE_AUTH } from "../../FirebaseConfig";
 import { NavigationProp } from "@react-navigation/native";

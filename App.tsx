@@ -42,9 +42,6 @@ import {
   useSafeAreaInsets,
 } from "react-native-safe-area-context";
 
-import { ThemeProvider } from './context/ThemeContext';
-
-
 
 
 const Stack = createStackNavigator();
@@ -125,95 +122,101 @@ export default function App() {
     );
   }
 
+  const getInitialRoute = () => {
+    if (user) return "Inside";
+    return viewedOnboarding ? "WelcomeScreen" : "Onboarding";
+  };
+
   return (
     <GestureHandlerRootView style={styles.container}>
       <SafeAreaProvider>
-          <StatusBar style={"dark"} />
-          <NavigationContainer>
-            <Stack.Navigator
-              initialRouteName={
-                user
-                  ? "Inside"
-                  : viewedOnboarding
-                  ? "WelcomeScreen"
-                  : "Onboarding"
-              }
-            >
-              {!user ? (
-                <>
-                  <Stack.Screen
-                    name="Onboarding"
-                    component={Onboarding}
-                    options={{
-                      headerShown: false,
-                      ...TransitionPresets.SlideFromRightIOS,
-                    }}
-                  />
-                  <Stack.Screen
-                    name="WelcomeScreen"
-                    component={WelcomeScreen}
-                    options={{
-                      headerShown: false,
-                      ...TransitionPresets.ModalSlideFromBottomIOS,
-                    }}
-                  />
-                  <Stack.Screen
-                    name="LOGIN"
-                    component={LoginScreen}
-                    options={{
-                      headerShown: false,
-                      ...TransitionPresets.SlideFromRightIOS,
-                    }}
-                  />
-                  <Stack.Screen
-                    name="SIGNUP"
-                    component={SignupScreen}
-                    options={{
-                      headerShown: false,
-                      ...TransitionPresets.SlideFromRightIOS,
-                    }}
-                  />
-                  <Stack.Screen
-                    name="ForgotPassword"
-                    component={ForgotPassword}
-                    options={{
-                      headerShown: true,
-                      title: "Forgot Password",
-                      ...TransitionPresets.SlideFromRightIOS,
-                    }}
-                  />
-                </>
-              ) : (
-                <>
-                  <Stack.Screen
-                    name="Inside"
-                    component={InsideLayout}
-                    options={{
-                      headerShown: false,
-                      ...TransitionPresets.SlideFromRightIOS,
-                    }}
-                  />
-                  <Stack.Screen name="Splash" options={{ headerShown: false }}>
-                    {(props) => (
-                      <Splash
-                        {...props}
-                        onAnimationFinish={(isCancelled) => {
-                          if (!isCancelled) {
-                            setSplashAnimationFinished(true);
-                          }
-                        }}
-                      />
-                    )}
-                  </Stack.Screen>
-                  <Stack.Screen
-                    name="WelcomeScreen"
-                    component={WelcomeScreen}
-                    options={{ headerShown: false, ...TransitionPresets.SlideFromRightIOS }}
-                  />
-                </>
-              )}
-            </Stack.Navigator>
-          </NavigationContainer>
+        <StatusBar style={"dark"} />
+        <NavigationContainer>
+          <Stack.Navigator initialRouteName={getInitialRoute()}>
+            {!user ? (
+              <>
+                <Stack.Screen
+                  name="Onboarding"
+                  component={Onboarding}
+                  options={{
+                    headerShown: false,
+                    ...TransitionPresets.SlideFromRightIOS,
+                  }}
+                />
+                <Stack.Screen
+                  name="WelcomeScreen"
+                  component={WelcomeScreen}
+                  options={{
+                    headerShown: false,
+                    ...TransitionPresets.ModalSlideFromBottomIOS,
+                  }}
+                />
+                <Stack.Screen
+                  name="LOGIN"
+                  component={LoginScreen}
+                  options={{
+                    headerShown: false,
+                    ...TransitionPresets.SlideFromRightIOS,
+                  }}
+                />
+                <Stack.Screen
+                  name="SIGNUP"
+                  component={SignupScreen}
+                  options={{
+                    headerShown: false,
+                    ...TransitionPresets.SlideFromRightIOS,
+                  }}
+                />
+                <Stack.Screen
+                  name="ForgotPassword"
+                  component={ForgotPassword}
+                  options={{
+                    headerShown: true,
+                    title: "Forgot Password",
+                    ...TransitionPresets.SlideFromRightIOS,
+                  }}
+                />
+              </>
+            ) : (
+              <>
+                <Stack.Screen
+                  name="Inside"
+                  component={InsideLayout}
+                  options={{
+                    headerShown: false,
+                    ...TransitionPresets.SlideFromRightIOS,
+                  }}
+                />
+                <Stack.Screen
+                  name="Splash"
+                  options={{
+                    headerShown: false,
+                    ...TransitionPresets.SlideFromRightIOS,
+                  }}
+                >
+                  {(props) => (
+                    <Splash
+                      {...props}
+                      onAnimationFinish={(isCancelled) => {
+                        if (!isCancelled) {
+                          setSplashAnimationFinished(true);
+                        }
+                      }}
+                    />
+                  )}
+                </Stack.Screen>
+                <Stack.Screen
+                  name="WelcomeScreen"
+                  component={WelcomeScreen}
+                  options={{
+                    headerShown: false,
+                    ...TransitionPresets.ModalSlideFromBottomIOS,
+                  }}
+                />
+              </>
+            )}
+          </Stack.Navigator>
+        </NavigationContainer>
       </SafeAreaProvider>
     </GestureHandlerRootView>
   );

@@ -1,9 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, SafeAreaView, Image } from "react-native";
+import {
+  View,
+  StyleSheet,
+  SafeAreaView,
+  Image,
+  ActivityIndicator,
+} from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import * as Font from "expo-font";
 import CustomText from "@/components/CustomText";
 import CustomTouchable from "@/components/CustomTouchable";
+import LottieView from "lottie-react-native";
 
 import { colors } from "../utils/colors";
 import { fonts } from "../utils/fonts";
@@ -15,6 +22,8 @@ export default function WelcomeScreen() {
   const insets = useSafeAreaInsets();
 
   const [fontsLoaded, setFontsLoaded] = useState(false);
+
+  const [loadingPlatform, setLoadingPlatform] = useState<string | null>(null); // Track loading state for each platform
 
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
@@ -52,6 +61,14 @@ export default function WelcomeScreen() {
     return null; // You can return a loading spinner here
   }
 
+  const handleSocialSignUp = (platform: string) => {
+    setLoadingPlatform(platform); // Set the current platform as loading
+    console.log(`${platform} sign up pressed`);
+    setTimeout(() => {
+      setLoadingPlatform(null); // Reset after delay
+    }, 2000); // Adjust the delay as needed
+  };
+
   const handleGoogleSignUp = () => {
     console.log("Google sign up pressed");
   };
@@ -76,42 +93,103 @@ export default function WelcomeScreen() {
       <View style={styles.content}>
         <CustomText style={styles.title}>Explore now</CustomText>
         <CustomText style={styles.subtitle}>Join us today.</CustomText>
+
         <CustomTouchable
           style={[styles.socialButton, styles.googleButton]}
-          onPress={handleGoogleSignUp}
+          onPress={() => handleSocialSignUp("Google")}
         >
-          <Image
-            source={require("../../assets/google.png")}
-            style={styles.socialIcon}
-          />
-          <CustomText style={styles.socialButtonText}>
-            Sign up with Google
-          </CustomText>
+          {loadingPlatform === "Google" ? (
+            <>
+              <Image
+                source={require("../../assets/google.png")}
+                style={styles.socialIcon}
+              />
+              <CustomText style={styles.socialButtonText}>
+                Sign up with Google
+              </CustomText>
+              <ActivityIndicator
+                size="small"
+                color="#000"
+                style={{ position: "absolute", left: "95%" }}
+              />
+            </>
+          ) : (
+            <>
+              <Image
+                source={require("../../assets/google.png")}
+                style={styles.socialIcon}
+              />
+              <CustomText style={styles.socialButtonText}>
+                Sign up with Google
+              </CustomText>
+            </>
+          )}
         </CustomTouchable>
+
         <CustomTouchable
           style={[styles.socialButton, styles.appleButton]}
-          onPress={handleAppleSignUp}
+          onPress={() => handleSocialSignUp("Apple")}
         >
-          <Image
-            source={require("../../assets/apple.png")}
-            style={styles.socialIcon}
-          />
-          <CustomText style={styles.socialButtonText}>
-            Sign up with Apple
-          </CustomText>
+          {loadingPlatform === "Apple" ? (
+            <>
+              <Image
+                source={require("../../assets/apple.png")}
+                style={styles.socialIcon}
+              />
+              <CustomText style={styles.socialButtonText}>
+                Sign up with Apple
+              </CustomText>
+              <ActivityIndicator
+                size="small"
+                color="#000"
+                style={{ position: "absolute", left: "95%" }}
+              />
+            </>
+          ) : (
+            <>
+              <Image
+                source={require("../../assets/apple.png")}
+                style={styles.socialIcon}
+              />
+              <CustomText style={styles.socialButtonText}>
+                Sign up with Apple
+              </CustomText>
+            </>
+          )}
         </CustomTouchable>
+
         <CustomTouchable
           style={[styles.socialButton, styles.facebookButton]}
-          onPress={handleFacebookSignUp}
+          onPress={() => handleSocialSignUp("Facebook")}
         >
-          <Image
-            source={require("../../assets/facebook.png")}
-            style={styles.socialIcon}
-          />
-          <CustomText style={styles.socialButtonText}>
-            Sign up with Facebook
-          </CustomText>
+          {loadingPlatform === "Facebook" ? (
+            <>
+              <Image
+                source={require("../../assets/facebook.png")}
+                style={styles.socialIcon}
+              />
+              <CustomText style={styles.socialButtonText}>
+                Sign up with Facebook
+              </CustomText>
+              <ActivityIndicator
+                size="small"
+                color="#000"
+                style={{ position: "absolute", left: "95%" }}
+              />
+            </>
+          ) : (
+            <>
+              <Image
+                source={require("../../assets/facebook.png")}
+                style={styles.socialIcon}
+              />
+              <CustomText style={styles.socialButtonText}>
+                Sign up with Facebook
+              </CustomText>
+            </>
+          )}
         </CustomTouchable>
+
         <View style={styles.dividerContainer}>
           <View style={styles.divider} />
           <CustomText style={styles.dividerText}>or</CustomText>
@@ -159,18 +237,12 @@ export default function WelcomeScreen() {
         </CustomText>
 
         <CustomTouchable
+          style={[styles.loginButton, { backgroundColor: "red" }]}
           onPress={clearOnboarding}
-          style={{
-            backgroundColor: "red",
-            height: 40,
-            borderRadius: 6,
-            marginTop: 150,
-            marginBottom: 150,
-            marginLeft: "-70%",
-            padding: 10,
-          }}
         >
-          <CustomText style={{ color: "white" }}>Clear Onboarding</CustomText>
+          <CustomText style={[styles.loginButtonText, { color: "white" }]}>
+            Clear Onboarding
+          </CustomText>
         </CustomTouchable>
       </View>
     </SafeAreaView>

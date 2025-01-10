@@ -113,7 +113,7 @@ const LoginScreen = () => {
         </TouchableOpacity>
 
         {loading ? (
-          <ActivityIndicator size="large" color="#45484A" />
+          <ActivityIndicator size="large" color="#000" />
         ) : (
           <>
             <TouchableOpacity

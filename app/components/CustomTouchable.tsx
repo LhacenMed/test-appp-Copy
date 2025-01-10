@@ -1,9 +1,11 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import {
   TouchableWithoutFeedback,
   Animated,
   StyleProp,
   ViewStyle,
+  View,
+  StyleSheet,
 } from "react-native";
 
 interface CustomTouchableProps {
@@ -18,36 +20,25 @@ const CustomTouchable: React.FC<CustomTouchableProps> = ({
   onPress,
 }) => {
   const scale = useRef(new Animated.Value(1)).current;
-  const opacity = useRef(new Animated.Value(1)).current;
+  const [isDimmed, setIsDimmed] = useState(false);
 
   const handlePressIn = () => {
-    Animated.parallel([
-      Animated.timing(scale, {
-        toValue: 0.95,
-        duration: 150,
-        useNativeDriver: true,
-      }),
-      Animated.timing(opacity, {
-        toValue: 0.8,
-        duration: 150,
-        useNativeDriver: true,
-      }),
-    ]).start();
+    setIsDimmed(true);
+    Animated.timing(scale, {
+      toValue: 0.98,
+      duration: 70,
+      useNativeDriver: true,
+    }).start();
   };
 
   const handlePressOut = () => {
-    Animated.parallel([
-      Animated.spring(scale, {
-        toValue: 1,
-        useNativeDriver: true,
-        friction: 3,
-      }),
-      Animated.timing(opacity, {
-        toValue: 1,
-        duration: 150,
-        useNativeDriver: true,
-      }),
-    ]).start();
+    setIsDimmed(false);
+    Animated.timing(scale, {
+      toValue: 1,
+      useNativeDriver: true,
+      // friction: 3,
+      duration: 100,
+    }).start();
   };
 
   return (
@@ -56,8 +47,17 @@ const CustomTouchable: React.FC<CustomTouchableProps> = ({
       onPressOut={handlePressOut}
       onPress={onPress}
     >
-      <Animated.View style={[style, { transform: [{ scale }], opacity }]}>
+      <Animated.View style={[style, { transform: [{ scale }] }]}>
         {children}
+        {isDimmed && (
+          <View
+            style={{
+              ...StyleSheet.absoluteFillObject,
+              backgroundColor: "rgba(0, 0, 0, 0.05)",
+              borderRadius: 50,
+            }}
+          />
+        )}
       </Animated.View>
     </TouchableWithoutFeedback>
   );

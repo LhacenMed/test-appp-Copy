@@ -1,12 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  SafeAreaView,
-  Image,
-  ScrollView,
-} from "react-native";
+import { View, StyleSheet, SafeAreaView, Image } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import * as Font from "expo-font";
 import CustomText from "@/components/CustomText";
@@ -19,7 +12,27 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { RootStackParamList } from "../types";
 
 export default function WelcomeScreen() {
+  const insets = useSafeAreaInsets();
+
   const [fontsLoaded, setFontsLoaded] = useState(false);
+
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+
+  const handleLogin = () => {
+    navigation.navigate("LOGIN");
+  };
+
+  const handleSignup = () => {
+    navigation.navigate("SIGNUP");
+  };
+
+  const clearOnboarding = async () => {
+    try {
+      await AsyncStorage.removeItem("@viewedOnboarding");
+    } catch (err) {
+      console.log("Error @clearOnboarding: ", err);
+    }
+  };
 
   useEffect(() => {
     let isMounted = true;
@@ -35,35 +48,20 @@ export default function WelcomeScreen() {
     };
   }, []);
 
-  const insets = useSafeAreaInsets();
-
   if (!fontsLoaded) {
     return null; // You can return a loading spinner here
   }
 
   const handleGoogleSignUp = () => {
-    // Implement Google sign up
     console.log("Google sign up pressed");
   };
 
   const handleAppleSignUp = () => {
-    // Implement Apple sign up
     console.log("Apple sign up pressed");
   };
 
   const handleFacebookSignUp = () => {
-    // Implement Facebook sign up
     console.log("Facebook sign up pressed");
-  };
-
-  const handleCreateAccount = () => {
-    // Implement email sign up
-    console.log("Create account pressed");
-  };
-
-  const handleLogin = () => {
-    // Navigate to sign in screen
-    console.log("Login pressed");
   };
 
   const containerStyle = [
@@ -74,83 +72,108 @@ export default function WelcomeScreen() {
   ];
 
   return (
-      <SafeAreaView style={containerStyle}>
-        <View style={styles.content}>
-          <CustomText style={styles.title}>Explore now</CustomText>
-          <CustomText style={styles.subtitle}>Join us today.</CustomText>
-          <CustomTouchable
-            style={[styles.socialButton, styles.googleButton]}
-            onPress={handleGoogleSignUp}
-          >
-            <Image
-              source={require("../../assets/google.png")}
-              style={styles.socialIcon}
-            />
-            <CustomText style={styles.socialButtonText}>Sign up with Google</CustomText>
-          </CustomTouchable>
-          <CustomTouchable
-            style={[styles.socialButton, styles.appleButton]}
-            onPress={handleAppleSignUp}
-          >
-            <Image
-              source={require("../../assets/apple.png")}
-              style={styles.socialIcon}
-            />
-            <CustomText style={styles.socialButtonText}>Sign up with Apple</CustomText>
-          </CustomTouchable>
-          <CustomTouchable
-            style={[styles.socialButton, styles.facebookButton]}
-            onPress={handleFacebookSignUp}
-          >
-            <Image
-              source={require("../../assets/facebook.png")}
-              style={styles.socialIcon}
-            />
-            <CustomText style={styles.socialButtonText}>Sign up with Facebook</CustomText>
-          </CustomTouchable>
-          <View style={styles.dividerContainer}>
-            <View style={styles.divider} />
-            <CustomText style={styles.dividerText}>or</CustomText>
-            <View style={styles.divider} />
-          </View>
-          <CustomTouchable
-            style={styles.createAccountButton}
-            onPress={handleCreateAccount}
-          >
-            <CustomText style={styles.createAccountButtonText}>Create an account</CustomText>
-          </CustomTouchable>
-          <View style={styles.signInContainer}>
-            <CustomText style={styles.signInText}>Already have an account? </CustomText>
-          </View>
-          <CustomTouchable style={styles.loginButton} onPress={handleLogin}>
-            <CustomText style={styles.loginButtonText}>Login</CustomText>
-          </CustomTouchable>
-          <CustomText style={styles.termsText}>
-            By signing up, you agree to the{" "}
-            <CustomText
-              style={styles.link}
-              onPress={() => console.log("Terms of Service pressed")}
-            >
-              Terms of Service
-            </CustomText>{" "}
-            and{" "}
-            <CustomText
-              style={styles.link}
-              onPress={() => console.log("Privacy Policy pressed")}
-            >
-              Privacy Policy
-            </CustomText>
-            , including{" "}
-            <CustomText
-              style={styles.link}
-              onPress={() => console.log("Cookie Use pressed")}
-            >
-              Cookie Use
-            </CustomText>
-            .
+    <SafeAreaView style={containerStyle}>
+      <View style={styles.content}>
+        <CustomText style={styles.title}>Explore now</CustomText>
+        <CustomText style={styles.subtitle}>Join us today.</CustomText>
+        <CustomTouchable
+          style={[styles.socialButton, styles.googleButton]}
+          onPress={handleGoogleSignUp}
+        >
+          <Image
+            source={require("../../assets/google.png")}
+            style={styles.socialIcon}
+          />
+          <CustomText style={styles.socialButtonText}>
+            Sign up with Google
+          </CustomText>
+        </CustomTouchable>
+        <CustomTouchable
+          style={[styles.socialButton, styles.appleButton]}
+          onPress={handleAppleSignUp}
+        >
+          <Image
+            source={require("../../assets/apple.png")}
+            style={styles.socialIcon}
+          />
+          <CustomText style={styles.socialButtonText}>
+            Sign up with Apple
+          </CustomText>
+        </CustomTouchable>
+        <CustomTouchable
+          style={[styles.socialButton, styles.facebookButton]}
+          onPress={handleFacebookSignUp}
+        >
+          <Image
+            source={require("../../assets/facebook.png")}
+            style={styles.socialIcon}
+          />
+          <CustomText style={styles.socialButtonText}>
+            Sign up with Facebook
+          </CustomText>
+        </CustomTouchable>
+        <View style={styles.dividerContainer}>
+          <View style={styles.divider} />
+          <CustomText style={styles.dividerText}>or</CustomText>
+          <View style={styles.divider} />
+        </View>
+        <CustomTouchable
+          style={styles.createAccountButton}
+          onPress={handleSignup}
+        >
+          <CustomText style={styles.createAccountButtonText}>
+            Create an account
+          </CustomText>
+        </CustomTouchable>
+        <View style={styles.signInContainer}>
+          <CustomText style={styles.signInText}>
+            Already have an account?{" "}
           </CustomText>
         </View>
-      </SafeAreaView>
+        <CustomTouchable style={styles.loginButton} onPress={handleLogin}>
+          <CustomText style={styles.loginButtonText}>Login</CustomText>
+        </CustomTouchable>
+        <CustomText style={styles.termsText}>
+          By signing up, you agree to the{" "}
+          <CustomText
+            style={styles.link}
+            onPress={() => console.log("Terms of Service pressed")}
+          >
+            Terms of Service
+          </CustomText>{" "}
+          and{" "}
+          <CustomText
+            style={styles.link}
+            onPress={() => console.log("Privacy Policy pressed")}
+          >
+            Privacy Policy
+          </CustomText>
+          , including{" "}
+          <CustomText
+            style={styles.link}
+            onPress={() => console.log("Cookie Use pressed")}
+          >
+            Cookie Use
+          </CustomText>
+          .
+        </CustomText>
+
+        <CustomTouchable
+          onPress={clearOnboarding}
+          style={{
+            backgroundColor: "red",
+            height: 40,
+            borderRadius: 6,
+            marginTop: 150,
+            marginBottom: 150,
+            marginLeft: "-70%",
+            padding: 10,
+          }}
+        >
+          <CustomText style={{ color: "white" }}>Clear Onboarding</CustomText>
+        </CustomTouchable>
+      </View>
+    </SafeAreaView>
   );
 }
 

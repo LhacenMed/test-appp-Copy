@@ -40,8 +40,8 @@ const Onboarding = ({ route }: { route?: OnboardingRouteProp }) => {
     } else {
       await AsyncStorage.setItem("@viewedOnboarding", "true");
       if (onComplete) onComplete();
-      console.log("Navigating to LoginSignupScreen...");
-      navigation.navigate("LoginSignupScreen");
+      console.log("Navigating to Welcome Screen...");
+      navigation.navigate("WelcomeScreen");
     }
   };
 

@@ -15,7 +15,7 @@ import { FIREBASE_AUTH } from "./FirebaseConfig";
 import ForgotPassword from "./app/screens/ForgotPassword";
 import LoginScreen from "./app/screens/LoginScreen";
 import SignupScreen from "./app/screens/SignupScreen";
-import LoginSignupScreen from "./app/screens/LoginSignupScreen";
+import WelcomeScreen from "./app/screens/WelcomeScreen";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Onboarding from "./app/screens/Onboarding";
 import { ActivityIndicator, View, StyleSheet } from "react-native";
@@ -41,7 +41,9 @@ import {
   SafeAreaInsetsContext,
   useSafeAreaInsets,
 } from "react-native-safe-area-context";
-import WelcomeScreen from "@/screens/WelcomeScreen";
+
+import { ThemeProvider } from './context/ThemeContext';
+
 
 
 
@@ -126,7 +128,6 @@ export default function App() {
   return (
     <GestureHandlerRootView style={styles.container}>
       <SafeAreaProvider>
-        <>
           <StatusBar style={"dark"} />
           <NavigationContainer>
             <Stack.Navigator
@@ -134,7 +135,7 @@ export default function App() {
                 user
                   ? "Inside"
                   : viewedOnboarding
-                  ? "LoginSignupScreen"
+                  ? "WelcomeScreen"
                   : "Onboarding"
               }
             >
@@ -143,27 +144,43 @@ export default function App() {
                   <Stack.Screen
                     name="Onboarding"
                     component={Onboarding}
-                    options={{ headerShown: false }}
+                    options={{
+                      headerShown: false,
+                      ...TransitionPresets.SlideFromRightIOS,
+                    }}
                   />
                   <Stack.Screen
-                    name="LoginSignupScreen"
-                    component={LoginSignupScreen}
-                    options={{ headerShown: false }}
+                    name="WelcomeScreen"
+                    component={WelcomeScreen}
+                    options={{
+                      headerShown: false,
+                      ...TransitionPresets.ModalSlideFromBottomIOS,
+                    }}
                   />
                   <Stack.Screen
                     name="LOGIN"
                     component={LoginScreen}
-                    options={{ headerShown: false }}
+                    options={{
+                      headerShown: false,
+                      ...TransitionPresets.SlideFromRightIOS,
+                    }}
                   />
                   <Stack.Screen
                     name="SIGNUP"
                     component={SignupScreen}
-                    options={{ headerShown: false }}
+                    options={{
+                      headerShown: false,
+                      ...TransitionPresets.SlideFromRightIOS,
+                    }}
                   />
                   <Stack.Screen
                     name="ForgotPassword"
                     component={ForgotPassword}
-                    options={{ headerShown: true, title: "Forgot Password" }}
+                    options={{
+                      headerShown: true,
+                      title: "Forgot Password",
+                      ...TransitionPresets.SlideFromRightIOS,
+                    }}
                   />
                 </>
               ) : (
@@ -171,7 +188,10 @@ export default function App() {
                   <Stack.Screen
                     name="Inside"
                     component={InsideLayout}
-                    options={{ headerShown: false }}
+                    options={{
+                      headerShown: false,
+                      ...TransitionPresets.SlideFromRightIOS,
+                    }}
                   />
                   <Stack.Screen name="Splash" options={{ headerShown: false }}>
                     {(props) => (
@@ -194,7 +214,6 @@ export default function App() {
               )}
             </Stack.Navigator>
           </NavigationContainer>
-        </>
       </SafeAreaProvider>
     </GestureHandlerRootView>
   );

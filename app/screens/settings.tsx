@@ -9,6 +9,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import { SystemBars } from "react-native-bars";
+import { interpolateColor } from "react-native-reanimated";
 
 const Page = () => {
   const colorScheme = useColorScheme();
@@ -27,9 +28,15 @@ const Page = () => {
   const backgroundColorAnimation = useAnimatedStyle(() => {
     return {
       backgroundColor:
-        theme === "dark" ? withTiming("black") : withTiming("white"),
+        theme === "dark" ? withTiming("black") : withTiming("#e1e1e1"),
     };
   });
+
+  const textColorAnimation = useAnimatedStyle(() => {
+      return {
+        color: theme === "dark" ? withTiming("white") : withTiming("black"),
+      };
+    });
 
   return (
     <Animated.View
@@ -39,7 +46,7 @@ const Page = () => {
         backgroundColorAnimation,
       ]}
     >
-      <Text style={{color: "silver"}}>Settings Screen</Text>
+      <Animated.Text style={textColorAnimation}>Settings Screen</Animated.Text>
       <SystemBars
         animated={true}
         barStyle={theme === "dark" ? "light-content" : "dark-content"}

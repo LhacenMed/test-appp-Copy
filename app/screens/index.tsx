@@ -29,7 +29,7 @@ const Page = ({ navigation }: RouterProps) => {
       await AsyncStorage.setItem("@viewedOnboarding", "true");
       navigation.reset({
         index: 0,
-        routes: [{ name: "LoginSignupScreen" }],
+        routes: [{ name: "WelcomeScreen" }],
       });
     } catch (error) {
       console.error("Error during logout", error);

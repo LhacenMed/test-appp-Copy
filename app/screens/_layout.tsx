@@ -5,7 +5,6 @@ import Index from "./index";
 import Explore from "./explore";
 import Profile from "./profile";
 import Settings from "./settings";
-import { View } from "react-native";
 import BottomSheet from "@/components/BottomSheet";
 import { useColorScheme } from "react-native";
 

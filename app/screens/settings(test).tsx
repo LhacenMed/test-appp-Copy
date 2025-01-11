@@ -20,10 +20,12 @@ export default function SettingsScreen({
   const MenuItem = ({
     icon,
     title,
+    subtitle,
     last = false,
   }: {
     icon: keyof typeof Ionicons.glyphMap;
     title: string;
+    subtitle: string;
     last?: boolean;
   }) => (
     <TouchableOpacity style={[styles.menuItem, !last && styles.menuItemBorder]}>
@@ -35,14 +37,17 @@ export default function SettingsScreen({
             color="#666"
             style={styles.menuItemIcon}
           />
-          <Text style={styles.menuItemText}>{title}</Text>
+          <View style={styles.menuItemTextContainer}>
+            <Text style={styles.menuItemText}>{title}</Text>
+            {subtitle && <Text style={styles.menuItemSubtext}>{subtitle}</Text>}
+          </View>
         </View>
         <Ionicons name="chevron-forward" size={20} color="#666" />
       </View>
     </TouchableOpacity>
   );
 
-  const insets = useSafeAreaInsets();
+    const insets = useSafeAreaInsets();
 
   return (
     <SafeAreaView style={[styles.container, { paddingTop: insets.top }]}>
@@ -65,9 +70,22 @@ export default function SettingsScreen({
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Account</Text>
           <View style={styles.sectionContent}>
-            <MenuItem icon="person-outline" title="Profile" />
-            <MenuItem icon="lock-closed-outline" title="Password" />
-            <MenuItem icon="notifications-outline" title="Notifications" last />
+            <MenuItem
+              icon="person-outline"
+              title="Profile"
+              subtitle="Edit your personal information"
+            />
+            <MenuItem
+              icon="lock-closed-outline"
+              title="Password"
+              subtitle="Change your password"
+            />
+            <MenuItem
+              icon="notifications-outline"
+              title="Notifications"
+              subtitle="Manage notification settings"
+              last
+            />
           </View>
         </View>
 
@@ -75,8 +93,17 @@ export default function SettingsScreen({
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>More</Text>
           <View style={styles.sectionContent}>
-            <MenuItem icon="chatbubble-outline" title="Feedback" />
-            <MenuItem icon="help-circle-outline" title="Help" last />
+            <MenuItem
+              icon="chatbubble-outline"
+              title="Feedback"
+              subtitle="Help us improve our app"
+            />
+            <MenuItem
+              icon="help-circle-outline"
+              title="Help"
+              subtitle="FAQs and support"
+              last
+            />
           </View>
         </View>
 
@@ -138,7 +165,7 @@ const styles = StyleSheet.create({
     borderColor: "#f0f0f0",
   },
   menuItem: {
-    paddingVertical: 12,
+    paddingVertical: 14,
     paddingHorizontal: 16,
   },
   menuItemBorder: {
@@ -153,13 +180,22 @@ const styles = StyleSheet.create({
   menuItemLeft: {
     flexDirection: "row",
     alignItems: "center",
+    flex: 1,
   },
   menuItemIcon: {
     marginRight: 12,
   },
+  menuItemTextContainer: {
+    flex: 1,
+  },
   menuItemText: {
     fontSize: 16,
     color: "#666",
+  },
+  menuItemSubtext: {
+    fontSize: 13,
+    color: "#999",
+    marginTop: 2,
   },
   logoutButton: {
     margin: 16,

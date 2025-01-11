@@ -3,6 +3,9 @@
     "name": "Firebase-auth-login-app",
     "slug": "Firebase-auth-login-app",
     "version": "1.0.0",
+    "reactNativeExperimental": {
+      "newArchitecture": true
+    },
     "orientation": "portrait",
     "icon": "./assets/logo6.png",
     "userInterfaceStyle": "light",

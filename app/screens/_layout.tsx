@@ -19,11 +19,6 @@ export default function TabLayout() {
       tabBar={(props) => <TabBar {...props} />}
       screenOptions={{
         headerShown: false,
-        tabBarStyle: {
-          backgroundColor: colorScheme === "dark" ? "#000" : "#fff",
-        },
-        tabBarActiveTintColor: colorScheme === "dark" ? "#fff" : "#000",
-        tabBarInactiveTintColor: "gray",
       }}
     >
       <Tab.Screen name="index" component={Index} />

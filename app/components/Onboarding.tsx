@@ -34,7 +34,7 @@ const Onboarding = () => {
       } catch (err) {
         console.log("Error @setItem: ", err);
       }
-      navigation.navigate("index" as never); // Ensure "index" matches your home route
+      navigation.navigate("index" as never);
     }
   };
   

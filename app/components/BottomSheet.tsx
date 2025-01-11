@@ -122,7 +122,7 @@ const BottomSheet = forwardRef<BottomSheetMethods, Props>(
             style={[
               styles.container,
               {
-                width: width * 0.92,
+                width: width,
                 bottom: insets.bottom,
               },
               animationStyle,
@@ -167,11 +167,13 @@ const styles = StyleSheet.create({
     position: "absolute",
     paddingVertical: 40,
     paddingHorizontal: 20,
-    borderRadius: 30,
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
     justifyContent: "center",
     alignItems: "center",
     alignSelf: "center",
-    marginBottom: 120,
+    paddingBottom: 130,
+    // marginBottom: 120,
   },
   line: {
     position: "absolute",

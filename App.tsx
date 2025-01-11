@@ -22,6 +22,7 @@ import { ActivityIndicator, View, StyleSheet } from "react-native";
 import { colors } from "./app/utils/colors";
 import TabLayout from "./app/screens/_layout";
 import Splash from "./app/screens/Splash";
+import LoginScreenTest from "./app/screens/LoginScreen(test)";
 
 import {
   useFonts,
@@ -41,6 +42,7 @@ import {
   SafeAreaInsetsContext,
   useSafeAreaInsets,
 } from "react-native-safe-area-context";
+import SettingsScreen from "@/screens/settings(test)";
 
 
 
@@ -205,12 +207,28 @@ export default function App() {
                     />
                   )}
                 </Stack.Screen>
-                <Stack.Screen
+                {/* <Stack.Screen
                   name="WelcomeScreen"
                   component={WelcomeScreen}
                   options={{
                     headerShown: false,
-                    ...TransitionPresets.ModalSlideFromBottomIOS,
+                    ...TransitionPresets.SlideFromRightIOS,
+                  }}
+                /> */}
+                <Stack.Screen
+                  name="LoginScreenTest"
+                  component={LoginScreenTest}
+                  options={{
+                    headerShown: false,
+                    ...TransitionPresets.SlideFromRightIOS,
+                  }}
+                />
+                <Stack.Screen
+                  name="SettingsScreen"
+                  component={SettingsScreen}
+                  options={{
+                    headerShown: false,
+                    ...TransitionPresets.SlideFromRightIOS,
                   }}
                 />
               </>

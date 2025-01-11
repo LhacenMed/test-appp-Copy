@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, useColorScheme } from "react-native";
+import { StyleSheet, useColorScheme } from "react-native";
 import Button from "@/components/Button";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -9,7 +9,6 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import { SystemBars } from "react-native-bars";
-import { interpolateColor } from "react-native-reanimated";
 
 const Page = () => {
   const colorScheme = useColorScheme();
@@ -70,6 +69,5 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    // backgroundColor: "white",
   },
 });

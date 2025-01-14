@@ -5,6 +5,7 @@ import {
   SafeAreaView,
   useColorScheme,
   StatusBar,
+  Pressable,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -236,9 +237,15 @@ export default function Page({
             value={isEnabled}
             onValueChange={(newValue) => setIsEnabled(newValue)}
           />
-          <Animated.Text style={{ marginTop: 20, marginBottom: 70 }}>
-            Switch is {isEnabled ? "ON" : "OFF"}
-          </Animated.Text>
+          <Pressable
+            onPress={() => {
+              setIsEnabled((prevValue) => !prevValue);
+            }}
+          >
+            <Animated.Text style={{ marginTop: 20, marginBottom: 70 }}>
+              Switch is {isEnabled ? "ON" : "OFF"}
+            </Animated.Text>
+          </Pressable>
         </Animated.View>
       </Animated.ScrollView>
       <BottomSheet

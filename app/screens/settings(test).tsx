@@ -1,12 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
-  View,
-  Text,
   StyleSheet,
   TouchableOpacity,
   SafeAreaView,
-  ScrollView,
   useColorScheme,
+  StatusBar,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -15,41 +13,11 @@ import Animated, {
   useAnimatedStyle,
   withTiming,
 } from "react-native-reanimated";
-import { SystemBars } from "react-native-bars";
-import Button from "@/components/Button";
 import BottomSheet, { BottomSheetMethods } from "@/components/BottomSheet";
+import CustomMenuItem from "@/components/CustomMenuItem";
+import CustomSwitch from "@/components/CustomSwitch";
 
-const MenuItem = ({
-  icon,
-  title,
-  subtitle,
-  last = false,
-}: {
-  icon: keyof typeof Ionicons.glyphMap;
-  title: string;
-  subtitle: string;
-  last?: boolean;
-}) => (
-  <TouchableOpacity style={[styles.menuItem, !last && styles.menuItemBorder]}>
-    <View style={styles.menuItemContent}>
-      <View style={styles.menuItemLeft}>
-        <Ionicons
-          name={icon}
-          size={20}
-          color="#666"
-          style={styles.menuItemIcon}
-        />
-        <View style={styles.menuItemTextContainer}>
-          <Text style={styles.menuItemText}>{title}</Text>
-          {subtitle && <Text style={styles.menuItemSubtext}>{subtitle}</Text>}
-        </View>
-      </View>
-      <Ionicons name="chevron-forward" size={20} color="#666" />
-    </View>
-  </TouchableOpacity>
-);
-
-export default function SettingsScreen({
+export default function Page({
   navigation,
 }: {
   navigation: NavigationProp<any>;
@@ -62,6 +30,9 @@ export default function SettingsScreen({
   const [theme, setTheme] = useState<string | null | undefined>(colorScheme);
   const [themeSwitch, setThemeSwitch] = useState<string>("system");
 
+  const [isEnabled, setIsEnabled] = useState(false);
+  const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
+
   useEffect(() => {
     if (themeSwitch === "system") {
       setTheme(colorScheme);
@@ -71,37 +42,102 @@ export default function SettingsScreen({
   const backgroundColorAnimation = useAnimatedStyle(() => {
     return {
       backgroundColor:
-        theme === "dark" ? withTiming("black") : withTiming("#e1e1e1"),
+        theme === "dark" ? withTiming("#121212") : withTiming("#fff"),
+    };
+  });
+  const headerBackgroundColorAnimation = useAnimatedStyle(() => {
+    return {
+      backgroundColor:
+        theme === "dark" ? withTiming("#121212") : withTiming("#e1e1e1"),
+    };
+  });
+  const menuItemBackgroundColorAnimation = useAnimatedStyle(() => {
+    return {
+      backgroundColor:
+        theme === "dark" ? withTiming("#22272B") : withTiming("#fff"),
     };
   });
 
   const textColorAnimation = useAnimatedStyle(() => {
     return {
-      color: theme === "dark" ? withTiming("white") : withTiming("black"),
+      color: theme === "dark" ? withTiming("#fff") : withTiming("black"),
     };
   });
+
+  const MenuItem = ({
+    icon,
+    title,
+    subtitle,
+    last = false,
+  }: {
+    icon: keyof typeof Ionicons.glyphMap;
+    title: string;
+    subtitle: string;
+    last?: boolean;
+  }) => {
+    return (
+      <Animated.View style={[menuItemBackgroundColorAnimation]}>
+        <TouchableOpacity
+          style={[styles.menuItem, !last && styles.menuItemBorder]}
+        >
+          <Animated.View
+            style={[styles.menuItemContent, menuItemBackgroundColorAnimation]}
+          >
+            <Animated.View style={styles.menuItemLeft}>
+              <Ionicons
+                name={icon}
+                size={20}
+                color="#666"
+                style={styles.menuItemIcon}
+              />
+              <Animated.View style={styles.menuItemTextContainer}>
+                <Animated.Text style={styles.menuItemText}>
+                  {title}
+                </Animated.Text>
+                {subtitle && (
+                  <Animated.Text style={styles.menuItemSubtext}>
+                    {subtitle}
+                  </Animated.Text>
+                )}
+              </Animated.View>
+            </Animated.View>
+            <Ionicons name="chevron-forward" size={20} color="#666" />
+          </Animated.View>
+        </TouchableOpacity>
+      </Animated.View>
+    );
+  };
 
   return (
     <SafeAreaView style={[styles.container, { paddingTop: insets.top }]}>
       {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
+      <Animated.View style={styles.header}>
+        <StatusBar
+          animated={true}
+          barStyle={theme === "dark" ? "light-content" : "dark-content"}
+          backgroundColor={theme === "dark" ? "#000" : "#fff"}
+        />
+        {/* <TouchableOpacity onPress={() => navigation.goBack()}>
           <Ionicons name="chevron-back" size={24} color="#000" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Settings</Text>
-      </View>
+        </TouchableOpacity> */}
+        <Animated.Text style={styles.headerTitle}>Settings</Animated.Text>
+      </Animated.View>
 
-      <ScrollView>
+      <Animated.ScrollView style={backgroundColorAnimation}>
         {/* Premium Card */}
         <TouchableOpacity style={styles.premiumCard}>
-          <Text style={styles.premiumTitle}>Premium Membership</Text>
-          <Text style={styles.premiumSubtitle}>Upgrade for more feature</Text>
+          <Animated.Text style={styles.premiumTitle}>
+            Premium Membership 🚀
+          </Animated.Text>
+          <Animated.Text style={styles.premiumSubtitle}>
+            Upgrade for more features
+          </Animated.Text>
         </TouchableOpacity>
 
         {/* Account Section */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Account</Text>
-          <View style={styles.sectionContent}>
+        <Animated.View style={[styles.section]}>
+          <Animated.Text style={styles.sectionTitle}>Account</Animated.Text>
+          <Animated.View style={styles.sectionContent}>
             <MenuItem
               icon="person-outline"
               title="Profile"
@@ -118,13 +154,13 @@ export default function SettingsScreen({
               subtitle="Push, email alerts"
               last
             />
-          </View>
-        </View>
+          </Animated.View>
+        </Animated.View>
 
         {/* Preferences Section */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Preferences</Text>
-          <View style={styles.sectionContent}>
+        <Animated.View style={styles.section}>
+          <Animated.Text style={styles.sectionTitle}>Preferences</Animated.Text>
+          <Animated.View style={styles.sectionContent}>
             <MenuItem
               icon="language-outline"
               title="Language"
@@ -135,10 +171,12 @@ export default function SettingsScreen({
               title="Payment method"
               subtitle="Preferred payment method"
             />
-            <MenuItem
+            <CustomMenuItem
               icon="contrast-outline"
               title="Theme"
               subtitle="Light, dark mode"
+              bottomSheetRef={bottomSheetRef}
+              theme={theme}
             />
             <MenuItem
               icon="calendar-outline"
@@ -146,13 +184,13 @@ export default function SettingsScreen({
               subtitle="Seats, routes"
               last
             />
-          </View>
-        </View>
+          </Animated.View>
+        </Animated.View>
 
         {/* Support Section */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Support</Text>
-          <View style={styles.sectionContent}>
+        <Animated.View style={styles.section}>
+          <Animated.Text style={styles.sectionTitle}>Support</Animated.Text>
+          <Animated.View style={styles.sectionContent}>
             <MenuItem
               icon="chatbubble-outline"
               title="Feedback"
@@ -164,13 +202,13 @@ export default function SettingsScreen({
               subtitle="FAQs, guides, contact support"
               last
             />
-          </View>
-        </View>
+          </Animated.View>
+        </Animated.View>
 
         {/* Legal Section */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>More</Text>
-          <View style={styles.sectionContent}>
+        <Animated.View style={styles.section}>
+          <Animated.Text style={styles.sectionTitle}>More</Animated.Text>
+          <Animated.View style={styles.sectionContent}>
             <MenuItem
               icon="document-text-outline"
               title="Terms and Conditions"
@@ -182,14 +220,34 @@ export default function SettingsScreen({
               subtitle="Data protection"
               last
             />
-          </View>
-        </View>
+          </Animated.View>
+        </Animated.View>
 
         {/* Logout Button */}
         <TouchableOpacity style={styles.logoutButton}>
-          <Text style={styles.logoutText}>Logout</Text>
+          <Animated.Text style={styles.logoutText}>Logout</Animated.Text>
         </TouchableOpacity>
-      </ScrollView>
+
+        {/* Switch */}
+        <Animated.View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
+          <CustomSwitch
+            value={isEnabled}
+            onValueChange={(newValue) => setIsEnabled(newValue)}
+          />
+          <Animated.Text style={{ marginTop: 20, marginBottom: 70 }}>
+            Switch is {isEnabled ? "ON" : "OFF"}
+          </Animated.Text>
+        </Animated.View>
+      </Animated.ScrollView>
+      <BottomSheet
+        ref={bottomSheetRef}
+        setTheme={setTheme}
+        theme={theme}
+        setThemeSwitch={setThemeSwitch}
+        themeSwitch={themeSwitch}
+      />
     </SafeAreaView>
   );
 }
@@ -197,6 +255,7 @@ export default function SettingsScreen({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: "center",
     backgroundColor: "#fff",
   },
   header: {
@@ -204,11 +263,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 16,
     paddingTop: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: "#eee",
   },
   headerTitle: {
     fontSize: 24,
     fontWeight: "600",
-    marginLeft: 24,
   },
   premiumCard: {
     backgroundColor: "#6366F1",
@@ -276,7 +336,7 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   logoutButton: {
-    margin: 16,
+    marginBottom: 160,
     marginTop: 32,
     padding: 16,
     alignItems: "center",

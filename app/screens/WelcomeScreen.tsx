@@ -13,7 +13,6 @@ import CustomText from "@/components/CustomText";
 import CustomTouchable from "@/components/CustomTouchable";
 import LottieView from "lottie-react-native";
 
-import { colors } from "../utils/colors";
 import { fonts } from "../utils/fonts";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -237,7 +236,7 @@ export default function WelcomeScreen() {
             style={[styles.loginButton, { backgroundColor: "red" }]}
             onPress={clearOnboarding}
           >
-            <CustomText style={[styles.loginButtonText, { color: "white" }]}>
+            <CustomText style={[styles.loginButtonText, { color: "#fff" }]}>
               Clear Onboarding
             </CustomText>
           </CustomTouchable>

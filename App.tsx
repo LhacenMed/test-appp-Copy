@@ -19,7 +19,6 @@ import WelcomeScreen from "./app/screens/WelcomeScreen";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Onboarding from "./app/screens/Onboarding";
 import { ActivityIndicator, View, StyleSheet } from "react-native";
-import { colors } from "./app/utils/colors";
 import TabLayout from "./app/screens/_layout";
 import Splash from "./app/screens/Splash";
 import LoginScreenTest from "./app/screens/LoginScreen(test)";
@@ -43,6 +42,8 @@ import {
   useSafeAreaInsets,
 } from "react-native-safe-area-context";
 import SettingsScreen from "@/screens/settings(test)";
+import * as SystemUI from 'expo-system-ui';
+
 
 
 
@@ -58,6 +59,7 @@ function InsideLayout() {
 }
 
 export default function App() {
+  SystemUI.setBackgroundColorAsync("#1e1e1e"); // Navigation bar color
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [appReady, setAppReady] = useState(false);
@@ -119,7 +121,7 @@ export default function App() {
   if (loading) {
     return (
       <View style={styles.centered}>
-        <ActivityIndicator size="large" color={colors.primary} />
+        <ActivityIndicator size="large" color={"black"} />
       </View>
     );
   }

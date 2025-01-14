@@ -21,7 +21,7 @@ const Button = ({ bottomSheetRef, theme }: Props) => {
 
   const textColorAnimation = useAnimatedStyle(() => {
     return {
-      color: theme === "dark" ? withTiming("white") : withTiming("black"),
+      color: theme === "dark" ? withTiming("#fff") : withTiming("black"),
     };
   });
 

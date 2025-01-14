@@ -64,7 +64,7 @@ const BottomSheet = forwardRef<BottomSheetMethods, Props>(
     const backgroundColorAnimation = useAnimatedStyle(() => {
       return {
         backgroundColor:
-          theme === "dark" ? withTiming("#22272B") : withTiming("white"),
+          theme === "dark" ? withTiming("#22272B") : withTiming("#eee"),
       };
     });
 
@@ -165,15 +165,16 @@ export default BottomSheet;
 const styles = StyleSheet.create({
   container: {
     position: "absolute",
+    bottom: 0,
     paddingVertical: 40,
     paddingHorizontal: 20,
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
     justifyContent: "center",
     alignItems: "center",
-    alignSelf: "center",
-    paddingBottom: 130,
-    // marginBottom: 120,
+    paddingBottom: 50,
+    zIndex: 1000,
+    elevation: 10,
   },
   line: {
     position: "absolute",

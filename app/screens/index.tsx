@@ -65,7 +65,7 @@ const Page = ({ navigation }: RouterProps) => {
           padding: 10,
         }}
       >
-        <Text style={{ color: "white" }}>Clear Onboarding</Text>
+        <Text style={{ color: "#fff" }}>Clear Onboarding</Text>
       </TouchableOpacity>
       <Button onPress={handleLogout} title="Logout" />
     </View>
@@ -79,6 +79,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "#fff",
   },
   clearOnboarding: {
     backgroundColor: "red",

@@ -112,18 +112,19 @@ export default function TabBar({
 
 const styles = StyleSheet.create({
   tabbar: {
-    position: "absolute",
-    bottom: 30,
+    position: "relative",
+    bottom: 0,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    backgroundColor: "#fff",
-    marginHorizontal: 30,
+    backgroundColor: "#eee",
+    // marginHorizontal: 30,
     paddingVertical: 15,
-    borderRadius: 35,
-    shadowColor: "#000",
+    // borderRadius: 35,
+    shadowColor: "#414141",
     shadowOffset: { width: 0, height: 10 },
     shadowRadius: 10,
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.5,
+    // elevation: 10,
   },
 });

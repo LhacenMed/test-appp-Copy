@@ -109,6 +109,59 @@ export default function Page({
     );
   };
 
+  // Update the ToggleMenuItem component
+  const ToggleMenuItem = ({
+    icon,
+    title,
+    subtitle,
+    last = false,
+    value,
+    onValueChange,
+  }: {
+    icon: keyof typeof Ionicons.glyphMap;
+    title: string;
+    subtitle: string;
+    last?: boolean;
+    value: boolean;
+    onValueChange: (newValue: boolean) => void;
+  }) => {
+    return (
+      <Animated.View style={[menuItemBackgroundColorAnimation]}>
+        <Pressable
+          style={[styles.menuItem, !last && styles.menuItemBorder]}
+          onPress={() => onValueChange(!value)}
+        >
+          <Animated.View
+            style={[styles.menuItemContent, menuItemBackgroundColorAnimation]}
+          >
+            <Animated.View style={styles.menuItemLeft}>
+              <Ionicons
+                name={icon}
+                size={20}
+                color="#666"
+                style={styles.menuItemIcon}
+              />
+              <Animated.View style={styles.menuItemTextContainer}>
+                <Animated.Text style={styles.menuItemText}>
+                  {title}
+                </Animated.Text>
+                {subtitle && (
+                  <Animated.Text style={styles.menuItemSubtext}>
+                    {subtitle}
+                  </Animated.Text>
+                )}
+              </Animated.View>
+            </Animated.View>
+            <CustomSwitch
+              value={value}
+              onValueChange={onValueChange}
+            />
+          </Animated.View>
+        </Pressable>
+      </Animated.View>
+    );
+  };
+
   return (
     <SafeAreaView style={[styles.container, { paddingTop: insets.top }]}>
       {/* Header */}
@@ -162,10 +215,13 @@ export default function Page({
         <Animated.View style={styles.section}>
           <Animated.Text style={styles.sectionTitle}>Preferences</Animated.Text>
           <Animated.View style={styles.sectionContent}>
-            <MenuItem
+            {/* Update the usage of ToggleMenuItem in the Preferences section */}
+            <ToggleMenuItem
               icon="language-outline"
               title="Language"
               subtitle="App language"
+              value={isEnabled}
+              onValueChange={setIsEnabled}
             />
             <MenuItem
               icon="card-outline"
@@ -343,7 +399,7 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   logoutButton: {
-    marginBottom: 160,
+    marginBottom: 30,
     marginTop: 32,
     padding: 16,
     alignItems: "center",
@@ -353,3 +409,4 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
 });
+

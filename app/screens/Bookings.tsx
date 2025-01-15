@@ -1,5 +1,5 @@
-import { View, Text, StyleSheet, useColorScheme } from "react-native";
-import React, { useEffect, useRef, useState } from "react";
+import { Text, StyleSheet } from "react-native";
+import React from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import Animated from "react-native-reanimated";
@@ -10,7 +10,7 @@ const Page = () => {
 
   return (
     <Animated.View style={[styles.container, { paddingTop: insets.top }]}>
-      <Text>Profile Screen</Text>
+      <Text>Bookings Screen</Text>
     </Animated.View>
   );
 };

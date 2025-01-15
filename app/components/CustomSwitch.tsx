@@ -55,6 +55,15 @@ const CustomSwitch: React.FC<CustomSwitchProps> = ({
   }));
   const [isOn, setIsOn] = useState(value);
 
+  // Update the useEffect hook to respond to the `value` prop changes
+  useEffect(() => {
+    setIsOn(value);
+    translateX.value = withSpring(
+      value ? switchWidth - thumbSize - padding : 0,
+      springConfig
+    );
+  }, [value]);
+
   const toggleSwitch = () => {
     const newValue = !isOn;
     setIsOn(newValue);
@@ -134,7 +143,7 @@ const CustomSwitch: React.FC<CustomSwitchProps> = ({
           style={[
             {
               position: "absolute",
-              width: 22, // Slightly larger than thumb for effect
+              width: 22,
               height: 22,
               borderRadius: (thumbSize + 10) / 2,
               left: 2,

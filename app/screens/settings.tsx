@@ -15,7 +15,6 @@ import Animated, {
 } from "react-native-reanimated";
 import BottomSheet, { BottomSheetMethods } from "@/components/BottomSheet";
 import CustomMenuItem from "@/components/CustomMenuItem";
-import { SystemBars } from "react-native-bars";
 
 export default function Page({
   navigation,
@@ -42,12 +41,14 @@ export default function Page({
         theme === "dark" ? withTiming("#121212") : withTiming("#fff"),
     };
   });
+
   const headerBackgroundColorAnimation = useAnimatedStyle(() => {
     return {
       backgroundColor:
         theme === "dark" ? withTiming("#121212") : withTiming("#e1e1e1"),
     };
   });
+
   const menuItemBackgroundColorAnimation = useAnimatedStyle(() => {
     return {
       backgroundColor:
@@ -88,11 +89,15 @@ export default function Page({
                 style={styles.menuItemIcon}
               />
               <Animated.View style={styles.menuItemTextContainer}>
-                <Animated.Text style={styles.menuItemText}>
+                <Animated.Text
+                  style={[styles.menuItemText, textColorAnimation]}
+                >
                   {title}
                 </Animated.Text>
                 {subtitle && (
-                  <Animated.Text style={styles.menuItemSubtext}>
+                  <Animated.Text
+                    style={[styles.menuItemSubtext, textColorAnimation]}
+                  >
                     {subtitle}
                   </Animated.Text>
                 )}
@@ -133,7 +138,9 @@ export default function Page({
 
         {/* Account Section */}
         <Animated.View style={[styles.section]}>
-          <Animated.Text style={styles.sectionTitle}>Account</Animated.Text>
+          <Animated.Text style={[styles.sectionTitle, textColorAnimation]}>
+            Account
+          </Animated.Text>
           <Animated.View style={styles.sectionContent}>
             <MenuItem
               icon="person-outline"
@@ -156,14 +163,16 @@ export default function Page({
 
         {/* Preferences Section */}
         <Animated.View style={styles.section}>
-          <Animated.Text style={styles.sectionTitle}>Preferences</Animated.Text>
+          <Animated.Text style={[styles.sectionTitle, textColorAnimation]}>
+            Preferences
+          </Animated.Text>
           <Animated.View style={styles.sectionContent}>
             <MenuItem
               icon="language-outline"
               title="Language"
               subtitle="App language"
             />
-            
+
             <MenuItem
               icon="card-outline"
               title="Payment method"
@@ -187,7 +196,9 @@ export default function Page({
 
         {/* Support Section */}
         <Animated.View style={styles.section}>
-          <Animated.Text style={styles.sectionTitle}>Support</Animated.Text>
+          <Animated.Text style={[styles.sectionTitle, textColorAnimation]}>
+            Support
+          </Animated.Text>
           <Animated.View style={styles.sectionContent}>
             <MenuItem
               icon="chatbubble-outline"
@@ -205,7 +216,9 @@ export default function Page({
 
         {/* Legal Section */}
         <Animated.View style={styles.section}>
-          <Animated.Text style={styles.sectionTitle}>More</Animated.Text>
+          <Animated.Text style={[styles.sectionTitle, textColorAnimation]}>
+            More
+          </Animated.Text>
           <Animated.View style={styles.sectionContent}>
             <MenuItem
               icon="document-text-outline"
@@ -223,7 +236,9 @@ export default function Page({
 
         {/* Logout Button */}
         <TouchableOpacity style={styles.logoutButton}>
-          <Animated.Text style={styles.logoutText}>Logout</Animated.Text>
+          <Animated.Text style={[styles.logoutText, textColorAnimation]}>
+            Logout
+          </Animated.Text>
         </TouchableOpacity>
         {/* <SystemBars
           animated={true}

@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
-import { Pressable, View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import icons from "../constants/icon";
+import { Pressable, StyleSheet } from "react-native";
+import icons from "../constants/TabIcon";
 import Animated, {
   interpolate,
   useAnimatedStyle,
@@ -8,14 +8,13 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 
-type IconKeys = 'index' | 'explore' | 'profile' | 'settings';
+type IconKeys = "Home" | "Explore" | "Bookings" | "Settings";
 
 interface TabBarButtonProps {
   onPress: () => void;
   onLongPress: () => void;
   isFocused: boolean;
   routeName: IconKeys;
-  color: string;
   label: string;
 }
 
@@ -24,10 +23,8 @@ const TabBarButton: React.FC<TabBarButtonProps> = ({
   onLongPress,
   isFocused,
   routeName,
-  // color,
   label,
 }) => {
-
   const scale = useSharedValue(0);
 
   useEffect(() => {
@@ -38,9 +35,9 @@ const TabBarButton: React.FC<TabBarButtonProps> = ({
   }, [scale, isFocused]);
 
   const animatedIconStyle = useAnimatedStyle(() => {
-    const scaleValue = interpolate(scale.value, [0, 1], [1, 1.2]);
+    const scaleValue = interpolate(scale.value, [0, 1.2], [1.2, 1]);
 
-    const top = interpolate(scale.value, [0, 1], [0, 9]);
+    const top = interpolate(scale.value, [0, 1], [9, 0]);
 
     return {
       transform: [
@@ -53,14 +50,12 @@ const TabBarButton: React.FC<TabBarButtonProps> = ({
   });
 
   const animatedTextStyle = useAnimatedStyle(() => {
-    const opacity = interpolate(scale.value, [0, 1], [1, 0]);
+    const opacity = interpolate(scale.value, [1, 0], [1, 0]);
 
     return {
       opacity,
     };
   });
-
-  // const IconComponent = icons[routeName];
 
   return (
     <Pressable
@@ -70,12 +65,12 @@ const TabBarButton: React.FC<TabBarButtonProps> = ({
     >
       <Animated.View style={animatedIconStyle}>
         {icons[routeName]({
-          color: isFocused ? "#fff" : "#222",
+          color: isFocused ? "#222" : "#222",
         })}
       </Animated.View>
       <Animated.Text
         style={[
-          { color: isFocused ? "#673ab7" : "#222", fontSize: 11 },
+          { color: isFocused ? "#222" : "#222", fontSize: 11 },
           animatedTextStyle,
         ]}
       >

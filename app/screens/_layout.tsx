@@ -1,10 +1,10 @@
-import React, { useRef } from "react";
+import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import TabBar from "../components/TabBar";
 import Index from "./index";
-import Explore from "./explore";
-import Profile from "./profile";
-import Settings from "./settings";
+import Explore from "./Explore";
+import Profile from "./Bookings";
+import Settings from "./Settings";
 
 const Tab = createBottomTabNavigator();
 
@@ -17,10 +17,10 @@ export default function TabLayout() {
           headerShown: false,
         }}
       >
-        <Tab.Screen name="index" component={Index} />
-        <Tab.Screen name="explore" component={Explore} />
-        <Tab.Screen name="profile" component={Profile} />
-        <Tab.Screen name="settings" component={Settings} />
+        <Tab.Screen name="Home" component={Index} />
+        <Tab.Screen name="Explore" component={Explore} />
+        <Tab.Screen name="Bookings" component={Profile} />
+        <Tab.Screen name="Settings" component={Settings} />
       </Tab.Navigator>
     </>
   );

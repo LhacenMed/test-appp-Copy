@@ -44,7 +44,7 @@ export default function TabBar({
           animatedStyle,
           {
             position: "absolute",
-            backgroundColor: "#723feb",
+            // backgroundColor: "#222",
             borderRadius: 30,
             marginHorizontal: 8,
             height: dimensions.height - 15,
@@ -66,13 +66,12 @@ export default function TabBar({
         const onPress = () => {
           tabPositionX.value = withSpring(buttonWidth * index, {
             ...({
-              // duration: 1500,
-              stiffness: 250, // Controls the bounciness of the spring
-              damping: 23, // Controls how quickly the spring comes to rest
-              mass: 1, // Adjusts the "weight" of the spring
-              overshootClamping: false, // Allows overshooting the target value
-              restDisplacementThreshold: 0.01, // Displacement threshold to stop animation
-              restSpeedThreshold: 2, // Speed threshold to stop animation
+              stiffness: 250,
+              damping: 23,
+              mass: 1,
+              overshootClamping: false,
+              restDisplacementThreshold: 0.01,
+              restSpeedThreshold: 2,
               reduceMotion: ReduceMotion.System,
             } as any),
           });
@@ -100,8 +99,9 @@ export default function TabBar({
             onPress={onPress}
             onLongPress={onLongPress}
             isFocused={isFocused}
-            routeName={route.name as "index" | "explore" | "profile" | "settings"}
-            color={isFocused ? "#fff" : "#222"}
+            routeName={
+              route.name as "Home" | "Explore" | "Bookings" | "Settings"
+            }
             label={label}
           />
         );

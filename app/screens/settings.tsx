@@ -1,10 +1,12 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useContext } from "react";
 import {
   StyleSheet,
   TouchableOpacity,
   SafeAreaView,
   useColorScheme,
   StatusBar,
+  Switch,
+  Text,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -15,12 +17,18 @@ import Animated, {
 } from "react-native-reanimated";
 import BottomSheet, { BottomSheetMethods } from "@/components/BottomSheet";
 import CustomMenuItem from "@/components/CustomMenuItem";
+import { EventRegister } from "react-native-event-listeners";
+import ThemeContext from "../../theme/themeContext";
+
 
 export default function Page({
   navigation,
 }: {
   navigation: NavigationProp<any>;
 }) {
+  const themes = useContext(ThemeContext);
+  const [darkMode, setDarkMode] = useState(false);
+
   const insets = useSafeAreaInsets();
 
   const colorScheme = useColorScheme();
@@ -119,9 +127,6 @@ export default function Page({
           barStyle={theme === "dark" ? "light-content" : "dark-content"}
           backgroundColor={theme === "dark" ? "#000" : "#fff"}
         />
-        {/* <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Ionicons name="chevron-back" size={24} color="#000" />
-        </TouchableOpacity> */}
         <Animated.Text style={styles.headerTitle}>Settings</Animated.Text>
       </Animated.View>
 
@@ -136,11 +141,27 @@ export default function Page({
           </Animated.Text>
         </TouchableOpacity>
 
+        {/* Dark Mode Switch */}
+        <Switch
+          value={darkMode}
+          onValueChange={(value) => {
+            setDarkMode(value);
+            EventRegister.emit("ChangeTheme", value);
+          }}
+        />
+
         {/* Account Section */}
         <Animated.View style={[styles.section]}>
-          <Animated.Text style={[styles.sectionTitle, textColorAnimation]}>
-            Account
-          </Animated.Text>
+            <Animated.Text
+              style={[
+                styles.sectionTitle,
+                ,
+                { color: themes.color },
+                textColorAnimation,
+              ]}
+            >
+              Account
+            </Animated.Text>
           <Animated.View style={styles.sectionContent}>
             <MenuItem
               icon="person-outline"

@@ -1,4 +1,4 @@
-import { NavigationContainer } from "@react-navigation/native";
+import { DarkTheme, DefaultTheme, NavigationContainer } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
 import {
   createStackNavigator,
@@ -33,6 +33,10 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import SettingsScreen from "@/screens/settings(test)";
 import * as SystemUI from "expo-system-ui";
+import theme from "./theme/theme";
+import ThemeContext from "./theme/themeContext";
+import { EventRegister } from "react-native-event-listeners";
+
 
 const Stack = createStackNavigator();
 
@@ -45,6 +49,18 @@ function InsideLayout() {
 }
 
 export default function App() {
+  const [darkMode, setDarkMode] = useState(false);
+
+  useEffect(() => {
+    const listener = EventRegister.addEventListener("ChangeTheme", (data) => {
+      setDarkMode(data);
+    });
+
+    return () => {
+      EventRegister.removeAllListeners();
+    };
+  }, [darkMode]);
+
   SystemUI.setBackgroundColorAsync("#1e1e1e"); // Navigation bar color
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
@@ -120,8 +136,9 @@ export default function App() {
   return (
     <GestureHandlerRootView style={styles.container}>
       <SafeAreaProvider>
-          <StatusBar style={"dark"} />
-          <NavigationContainer>
+        <ThemeContext.Provider value={theme[darkMode ? "dark" : "light"]}>
+          <StatusBar style={darkMode ? "light" : "dark"} />
+          <NavigationContainer theme={darkMode ? DarkTheme : DefaultTheme}>
             <Stack.Navigator initialRouteName={getInitialRoute()}>
               {!user ? (
                 <>
@@ -196,13 +213,13 @@ export default function App() {
                     )}
                   </Stack.Screen>
                   {/* <Stack.Screen
-                    name="WelcomeScreen"
-                    component={WelcomeScreen}
-                    options={{
-                      headerShown: false,
-                      ...TransitionPresets.SlideFromRightIOS,
-                    }}
-                  /> */}
+                      name="WelcomeScreen"
+                      component={WelcomeScreen}
+                      options={{
+                        headerShown: false,
+                        ...TransitionPresets.SlideFromRightIOS,
+                      }}
+                    /> */}
                   <Stack.Screen
                     name="LoginScreenTest"
                     component={LoginScreenTest}
@@ -223,6 +240,7 @@ export default function App() {
               )}
             </Stack.Navigator>
           </NavigationContainer>
+        </ThemeContext.Provider>
       </SafeAreaProvider>
     </GestureHandlerRootView>
   );

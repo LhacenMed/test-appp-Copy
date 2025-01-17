@@ -21,7 +21,8 @@
         "backgroundColor": "#ffffff"
       },
       "softwareKeyboardLayoutMode": "pan",
-      "package": "com.lhacenmed.Firebaseauthloginapp"
+      "package": "com.lhacenmed.Firebaseauthloginapp",
+      "targetSdkVersion": 28
     },
     "web": {
       "favicon": "./assets/favicon.png"

@@ -1,9 +1,8 @@
+import { View, StyleSheet, LayoutChangeEvent, Platform } from "react-native";
 import {
-  View,
-  StyleSheet,
-  LayoutChangeEvent,
-} from "react-native";
-import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
+  BottomTabBarProps,
+  BottomTabNavigationOptions,
+} from "@react-navigation/bottom-tabs";
 import TabBarButton from "./TabBarButton";
 import { useState } from "react";
 import Animated, {
@@ -12,6 +11,11 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
+import { BlurView } from "expo-blur";
+
+interface CustomTabNavigationOptions extends BottomTabNavigationOptions {
+  blurEnabled?: boolean;
+}
 
 export default function TabBar({
   state,
@@ -31,20 +35,24 @@ export default function TabBar({
 
   const tabPositionX = useSharedValue(0);
 
-  const animatedStyle = useAnimatedStyle(() => {
-    return {
-      transform: [{ translateX: tabPositionX.value }],
-    };
-  });
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: tabPositionX.value }],
+  }));
 
-  return (
+  const blurEnabled =
+    Platform.OS === "ios" &&
+    (
+      descriptors[state.routes[state.index].key]
+        ?.options as CustomTabNavigationOptions
+    ).blurEnabled;
+
+  const TabBarContent = (
     <View onLayout={onTabbarLayout} style={styles.tabbar}>
       <Animated.View
         style={[
           animatedStyle,
           {
             position: "absolute",
-            // backgroundColor: "#222",
             borderRadius: 30,
             marginHorizontal: 8,
             height: dimensions.height - 15,
@@ -65,15 +73,13 @@ export default function TabBar({
 
         const onPress = () => {
           tabPositionX.value = withSpring(buttonWidth * index, {
-            ...({
-              stiffness: 250,
-              damping: 23,
-              mass: 1,
-              overshootClamping: false,
-              restDisplacementThreshold: 0.01,
-              restSpeedThreshold: 2,
-              reduceMotion: ReduceMotion.System,
-            } as any),
+            stiffness: 250,
+            damping: 23,
+            mass: 1,
+            overshootClamping: false,
+            restDisplacementThreshold: 0.01,
+            restSpeedThreshold: 2,
+            reduceMotion: ReduceMotion.System,
           });
           const event = navigation.emit({
             type: "tabPress",
@@ -108,23 +114,33 @@ export default function TabBar({
       })}
     </View>
   );
+
+  return blurEnabled ? (
+    <BlurView intensity={50} tint="light" style={styles.blurView}>
+      {TabBarContent}
+    </BlurView>
+  ) : (
+    <View style={[styles.blurView, { backgroundColor: "#fff" }]}>
+      {TabBarContent}
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
-  tabbar: {
-    position: "relative",
+  blurView: {
+    position: "absolute",
     bottom: 0,
+    left: 0,
+    right: 0,
+    overflow: "hidden",
+    borderTopWidth: 1,
+    borderTopColor: "#eee",
+  },
+  tabbar: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    backgroundColor: "#eee",
-    // marginHorizontal: 30,
     paddingVertical: 15,
-    // borderRadius: 35,
-    shadowColor: "#414141",
-    shadowOffset: { width: 0, height: 10 },
-    shadowRadius: 10,
-    shadowOpacity: 0.5,
-    // elevation: 10,
+    marginBottom: Platform.OS === "ios" ? 15 : 0,
   },
 });

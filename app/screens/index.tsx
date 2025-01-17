@@ -1,8 +1,19 @@
 import React, { useContext } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Button } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Button,
+  StatusBar,
+} from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { FIREBASE_AUTH } from "../../FirebaseConfig";
 import { NavigationProp } from "@react-navigation/native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import Animated from "react-native-reanimated";
+
+
 
 interface RouterProps {
   navigation: NavigationProp<any, any>;
@@ -42,32 +53,43 @@ const Page = ({ navigation }: RouterProps) => {
     }
   };
 
+  const insets = useSafeAreaInsets();
+
   return (
-    <View style={styles.container}>
-      <Text>Home Screen</Text>
-      <Button onPress={navigateToSplash} title="Open splash" />
-      <Button onPress={navigateToWelcomeScreen} title="Open welcome screen" />
-      <Button
-        onPress={navigateToLoginScreenTest}
-        title="Open Login screen (test)"
-      />
-      <Button
-        onPress={navigateToSettingsScreenTest}
-        title="Open Settings screen (test)"
-      />
-      <TouchableOpacity
-        onPress={clearOnboarding}
-        style={{
-          backgroundColor: "red",
-          borderRadius: 6,
-          marginTop: 50,
-          marginBottom: 50,
-          padding: 10,
-        }}
+    <View style={[styles.container, { paddingTop: insets.top }]}>
+      {/* Header */}
+      <View style={[styles.header, { backgroundColor: "#fff" }]}>
+        <StatusBar barStyle="dark-content" />
+        <Text style={styles.headerTitle}>Home</Text>
+      </View>
+      <View
+        style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
       >
-        <Text style={{ color: "#fff" }}>Clear Onboarding</Text>
-      </TouchableOpacity>
-      <Button onPress={handleLogout} title="Logout" />
+        <Text>Home Screen</Text>
+        <Button onPress={navigateToSplash} title="Open splash" />
+        <Button onPress={navigateToWelcomeScreen} title="Open welcome screen" />
+        <Button
+          onPress={navigateToLoginScreenTest}
+          title="Open Login screen (test)"
+        />
+        <Button
+          onPress={navigateToSettingsScreenTest}
+          title="Open Settings screen (test)"
+        />
+        <TouchableOpacity
+          onPress={clearOnboarding}
+          style={{
+            backgroundColor: "red",
+            borderRadius: 6,
+            marginTop: 50,
+            marginBottom: 50,
+            padding: 10,
+          }}
+        >
+          <Text style={{ color: "#fff" }}>Clear Onboarding</Text>
+        </TouchableOpacity>
+        <Button onPress={handleLogout} title="Logout" />
+      </View>
     </View>
   );
 };
@@ -77,9 +99,21 @@ export default Page;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
+    // justifyContent: "center",
+    // alignItems: "center",
+    // backgroundColor: "#fff",
+  },
+  header: {
+    flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#fff",
+    padding: 16,
+    paddingTop: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: "#eee",
+  },
+  headerTitle: {
+    fontSize: 24,
+    fontWeight: "600",
   },
   clearOnboarding: {
     backgroundColor: "red",

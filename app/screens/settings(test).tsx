@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useContext } from "react";
 import {
   StyleSheet,
   TouchableOpacity,
@@ -6,6 +6,7 @@ import {
   useColorScheme,
   StatusBar,
   Pressable,
+  Switch,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -18,11 +19,17 @@ import BottomSheet, { BottomSheetMethods } from "@/components/BottomSheet";
 import CustomMenuItem from "@/components/CustomMenuItem";
 import CustomSwitch from "@/components/CustomSwitch";
 
+import { EventRegister } from "react-native-event-listeners";
+import ThemeContext from "../../theme/themeContext";
+
 export default function Page({
   navigation,
 }: {
   navigation: NavigationProp<any>;
 }) {
+  const themes = useContext(ThemeContext);
+  const [darkMode, setDarkMode] = useState(false);
+
   const insets = useSafeAreaInsets();
 
   const colorScheme = useColorScheme();
@@ -152,10 +159,7 @@ export default function Page({
                 )}
               </Animated.View>
             </Animated.View>
-            <CustomSwitch
-              value={value}
-              onValueChange={onValueChange}
-            />
+            <CustomSwitch value={value} onValueChange={onValueChange} />
           </Animated.View>
         </Pressable>
       </Animated.View>
@@ -180,13 +184,22 @@ export default function Page({
       <Animated.ScrollView style={backgroundColorAnimation}>
         {/* Premium Card */}
         <TouchableOpacity style={styles.premiumCard}>
-          <Animated.Text style={styles.premiumTitle}>
+          <Animated.Text style={[styles.premiumTitle, { color: themes.color }]}>
             Premium Membership 🚀
           </Animated.Text>
           <Animated.Text style={styles.premiumSubtitle}>
             Upgrade for more features
           </Animated.Text>
         </TouchableOpacity>
+
+        {/* Dark Mode Switch */}
+        <Switch
+          value={darkMode}
+          onValueChange={(value) => {
+            setDarkMode(value);
+            EventRegister.emit("ChangeTheme", value);
+          }}
+        />
 
         {/* Account Section */}
         <Animated.View style={[styles.section]}>
@@ -409,4 +422,3 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
 });
-

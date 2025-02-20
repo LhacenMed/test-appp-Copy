@@ -6,6 +6,7 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withSpring,
+  withTiming,
 } from "react-native-reanimated";
 
 type IconKeys = "Home" | "Explore" | "Bookings" | "Settings";
@@ -26,17 +27,28 @@ const TabBarButton: React.FC<TabBarButtonProps> = ({
   label,
 }) => {
   const scale = useSharedValue(0);
+  const circleOpacity = useSharedValue(0);
+  const borderOpacity = useSharedValue(0);
 
   useEffect(() => {
-    scale.value = withSpring(
-      typeof isFocused === "boolean" ? (isFocused ? 1 : 0) : isFocused,
-      { duration: 350 }
-    );
+    scale.value = withSpring(isFocused ? 1 : 0, {
+      damping: 20,
+      stiffness: 500,
+    });
   }, [scale, isFocused]);
 
-  const animatedIconStyle = useAnimatedStyle(() => {
-    const scaleValue = interpolate(scale.value, [0, 1.2], [1.2, 1]);
+  const handlePressIn = () => {
+    circleOpacity.value = withTiming(1, { duration: 0 }); // Fade in circle
+    borderOpacity.value = 0; // Hide border on press
+  };
 
+  const handlePressOut = () => {
+    circleOpacity.value = withTiming(0, { duration: 300 }); // Fade out circle
+    borderOpacity.value = withTiming(1, { duration: 300 }); // Fade in the border
+  };
+
+  const animatedIconStyle = useAnimatedStyle(() => {
+    const scaleValue = interpolate(scale.value, [0, 1.2], [1.2, 1.1]);
     const top = interpolate(scale.value, [0, 1], [9, 0]);
 
     return {
@@ -57,20 +69,41 @@ const TabBarButton: React.FC<TabBarButtonProps> = ({
     };
   });
 
+  const animatedCircleStyle = useAnimatedStyle(() => {
+    return {
+      opacity: circleOpacity.value,
+      // transform: [{ scale: circleScale.value }],
+      borderWidth: 1,
+      borderColor: `rgba(0, 0, 0, ${borderOpacity.value})`,
+    };
+  });
+
   return (
     <Pressable
       onPress={onPress}
       onLongPress={onLongPress}
+      onPressIn={handlePressIn}
+      onPressOut={handlePressOut}
       style={styles.tabbarItem}
     >
+      {/* Circular Background */}
+      <Animated.View style={[styles.circleBackground, animatedCircleStyle]} />
+
+      {/* Icon */}
       <Animated.View style={animatedIconStyle}>
         {icons[routeName]({
-          color: isFocused ? "#222" : "#222",
+          isFocused,
+          color: isFocused ? "rgb(0, 0, 0)" : "rgb(124, 124, 124)",
         })}
       </Animated.View>
+
+      {/* Label */}
       <Animated.Text
         style={[
-          { color: isFocused ? "#222" : "#222", fontSize: 11 },
+          {
+            color: isFocused ? "rgb(0, 0, 0)" : "rgb(0, 0, 0)",
+            fontSize: 11,
+          },
           animatedTextStyle,
         ]}
       >
@@ -83,20 +116,18 @@ const TabBarButton: React.FC<TabBarButtonProps> = ({
 export default TabBarButton;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  text: {
-    fontSize: 12,
-    marginTop: 5,
-  },
   tabbarItem: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
     gap: 5,
   },
+  circleBackground: {
+    position: "absolute",
+    width: 90,
+    height: 90,
+    borderRadius: 80,
+    backgroundColor: "rgba(0, 0, 0, 0.1)", // Adjust color and opacity as needed
+    zIndex: -1, // Ensures it appears behind the icon and label
+  },
 });
-

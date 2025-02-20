@@ -212,14 +212,6 @@ export default function App() {
                       />
                     )}
                   </Stack.Screen>
-                  {/* <Stack.Screen
-                      name="WelcomeScreen"
-                      component={WelcomeScreen}
-                      options={{
-                        headerShown: false,
-                        ...TransitionPresets.SlideFromRightIOS,
-                      }}
-                    /> */}
                   <Stack.Screen
                     name="LoginScreenTest"
                     component={LoginScreenTest}

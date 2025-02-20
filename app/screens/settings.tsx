@@ -20,12 +20,14 @@ import CustomMenuItem from "@/components/CustomMenuItem";
 import { EventRegister } from "react-native-event-listeners";
 import ThemeContext from "../../theme/themeContext";
 
+import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 
 export default function Page({
   navigation,
 }: {
   navigation: NavigationProp<any>;
 }) {
+  const BottomTabHeight = useBottomTabBarHeight();
   const themes = useContext(ThemeContext);
   const [darkMode, setDarkMode] = useState(false);
 
@@ -130,7 +132,7 @@ export default function Page({
         <Animated.Text style={styles.headerTitle}>Settings</Animated.Text>
       </Animated.View>
 
-      <Animated.ScrollView style={backgroundColorAnimation}>
+      <Animated.ScrollView style={[backgroundColorAnimation, { paddingBottom: BottomTabHeight}]}>
         {/* Premium Card */}
         <TouchableOpacity style={styles.premiumCard}>
           <Animated.Text style={styles.premiumTitle}>
@@ -152,16 +154,16 @@ export default function Page({
 
         {/* Account Section */}
         <Animated.View style={[styles.section]}>
-            <Animated.Text
-              style={[
-                styles.sectionTitle,
-                ,
-                { color: themes.color },
-                textColorAnimation,
-              ]}
-            >
-              Account
-            </Animated.Text>
+          <Animated.Text
+            style={[
+              styles.sectionTitle,
+              ,
+              { color: themes.color },
+              textColorAnimation,
+            ]}
+          >
+            Account
+          </Animated.Text>
           <Animated.View style={styles.sectionContent}>
             <MenuItem
               icon="person-outline"
@@ -360,7 +362,7 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   logoutButton: {
-    marginBottom: 150,
+    marginBottom: 100,
     marginTop: 32,
     padding: 16,
     alignItems: "center",

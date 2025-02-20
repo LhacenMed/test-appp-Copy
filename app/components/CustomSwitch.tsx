@@ -13,6 +13,7 @@ import Animated, {
   runOnJS,
 } from "react-native-reanimated";
 import { GestureDetector, Gesture } from "react-native-gesture-handler";
+import * as Haptics from "expo-haptics";
 
 interface CustomSwitchProps {
   value: boolean;
@@ -66,6 +67,10 @@ const CustomSwitch: React.FC<CustomSwitchProps> = ({
 
   const toggleSwitch = () => {
     const newValue = !isOn;
+
+    // Trigger haptic feedback using expo-haptics
+    Haptics.selectionAsync();
+
     setIsOn(newValue);
     onValueChange(newValue);
   };

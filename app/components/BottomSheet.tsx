@@ -64,7 +64,7 @@ const BottomSheet = forwardRef<BottomSheetMethods, Props>(
     const backgroundColorAnimation = useAnimatedStyle(() => {
       return {
         backgroundColor:
-          theme === "dark" ? withTiming("#22272B") : withTiming("#eee"),
+          theme === "dark" ? withTiming("#22272B") : withTiming("#fff"),
       };
     });
 
@@ -172,9 +172,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 30,
     justifyContent: "center",
     alignItems: "center",
-    paddingBottom: 50,
-    zIndex: 1000,
-    elevation: 10,
+    paddingBottom: 90,
   },
   line: {
     position: "absolute",

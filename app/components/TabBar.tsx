@@ -140,7 +140,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingVertical: 15,
+    paddingVertical: 10,
     marginBottom: Platform.OS === "ios" ? 15 : 0,
   },
 });

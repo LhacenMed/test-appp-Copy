@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { Appearance, ColorSchemeName } from "react-native";
 
-type ThemeMode = "light" | "dark" | "system";
+export type ThemeMode = "light" | "dark" | "system";
 
 interface ThemeContextProps {
   theme: ColorSchemeName;
@@ -32,7 +32,13 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const toggleTheme = (newMode: ThemeMode) => {
-    applyTheme(newMode);
+    if (newMode === "light" || newMode === "dark") {
+      applyTheme(newMode);
+    } else {
+      // For "system", get the current system theme
+      const systemTheme = Appearance.getColorScheme();
+      applyTheme(systemTheme || "light"); // Default to light if undefined
+    }
   };
 
   useEffect(() => {

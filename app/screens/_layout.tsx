@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   createBottomTabNavigator,
   BottomTabNavigationOptions,
@@ -8,6 +8,8 @@ import Index from "./index";
 import Explore from "./Explore";
 import Profile from "./Bookings";
 import Settings from "./Settings";
+import * as NavigationBar from "expo-navigation-bar";
+
 
 interface CustomTabNavigationOptions extends BottomTabNavigationOptions {
   blurEnabled?: boolean;
@@ -21,6 +23,12 @@ const Tab = createBottomTabNavigator<{
 }>();
 
 export default function TabLayout() {
+  useEffect(() => {
+    // Enable edge-to-edge mode to see content behind the navigation bar
+    NavigationBar.setPositionAsync("absolute");
+    // Set transparent background
+    NavigationBar.setBackgroundColorAsync("#ffffff00");
+  }, []);
   return (
     <Tab.Navigator
       tabBar={(props) => <TabBar {...props} />}

@@ -17,6 +17,7 @@ import { ActivityIndicator, View, StyleSheet } from "react-native";
 import TabLayout from "./app/screens/_layout";
 import Splash from "./app/screens/Splash";
 import LoginScreenTest from "./app/screens/LoginScreen(test)";
+import { ThemeProvider } from "./context/ThemeContext";
 
 import {
   useFonts,
@@ -33,9 +34,8 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import SettingsScreen from "@/screens/settings(test)";
 import * as SystemUI from "expo-system-ui";
-import theme from "./theme/theme";
-import ThemeContext from "./theme/themeContext";
 import { EventRegister } from "react-native-event-listeners";
+import * as NavigationBar from "expo-navigation-bar";
 
 
 const Stack = createStackNavigator();
@@ -108,6 +108,13 @@ export default function App() {
     return unsubscribe;
   }, []);
 
+  useEffect(() => {
+    // Enable edge-to-edge mode to see content behind the navigation bar
+    NavigationBar.setPositionAsync("absolute");
+    // Set transparent background
+    NavigationBar.setBackgroundColorAsync("#ffffff00");
+  }, []);
+
   if (!appReady || !splashAnimationFinished) {
     return (
       <Splash
@@ -136,7 +143,7 @@ export default function App() {
   return (
     <GestureHandlerRootView style={styles.container}>
       <SafeAreaProvider>
-        <ThemeContext.Provider value={theme[darkMode ? "dark" : "light"]}>
+        <ThemeProvider>
           <StatusBar style={darkMode ? "light" : "dark"} />
           <NavigationContainer theme={darkMode ? DarkTheme : DefaultTheme}>
             <Stack.Navigator initialRouteName={getInitialRoute()}>
@@ -232,7 +239,7 @@ export default function App() {
               )}
             </Stack.Navigator>
           </NavigationContainer>
-        </ThemeContext.Provider>
+        </ThemeProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>
   );

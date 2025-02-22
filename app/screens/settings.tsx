@@ -1,76 +1,35 @@
-import React, { useEffect, useRef, useState, useContext } from "react";
+import React, { useContext } from "react";
 import {
   StyleSheet,
   TouchableOpacity,
   SafeAreaView,
   useColorScheme,
   StatusBar,
-  Switch,
+  Pressable,
+  View,
   Text,
+  ScrollView,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { NavigationProp } from "@react-navigation/native";
-import Animated, {
-  useAnimatedStyle,
-  withTiming,
-} from "react-native-reanimated";
-import BottomSheet, { BottomSheetMethods } from "@/components/BottomSheet";
-import CustomMenuItem from "@/components/CustomMenuItem";
-import { EventRegister } from "react-native-event-listeners";
-import ThemeContext from "../../theme/themeContext";
+import CustomSwitch from "@/components/CustomSwitch";
 
-import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
+import { ThemeContext, ThemeMode } from "../../context/ThemeContext";
 
 export default function Page({
   navigation,
 }: {
   navigation: NavigationProp<any>;
 }) {
-  const BottomTabHeight = useBottomTabBarHeight();
-  const themes = useContext(ThemeContext);
-  const [darkMode, setDarkMode] = useState(false);
-
   const insets = useSafeAreaInsets();
-
+  const themes = useContext(ThemeContext);
   const colorScheme = useColorScheme();
-  const bottomSheetRef = useRef<BottomSheetMethods>(null);
 
-  const [theme, setTheme] = useState<string | null | undefined>(colorScheme);
-  const [themeSwitch, setThemeSwitch] = useState<string>("system");
-
-  useEffect(() => {
-    if (themeSwitch === "system") {
-      setTheme(colorScheme);
-    }
-  }, [colorScheme, themeSwitch]);
-
-  const backgroundColorAnimation = useAnimatedStyle(() => {
-    return {
-      backgroundColor:
-        theme === "dark" ? withTiming("#121212") : withTiming("#fff"),
-    };
-  });
-
-  const headerBackgroundColorAnimation = useAnimatedStyle(() => {
-    return {
-      backgroundColor:
-        theme === "dark" ? withTiming("#121212") : withTiming("#e1e1e1"),
-    };
-  });
-
-  const menuItemBackgroundColorAnimation = useAnimatedStyle(() => {
-    return {
-      backgroundColor:
-        theme === "dark" ? withTiming("#22272B") : withTiming("#fff"),
-    };
-  });
-
-  const textColorAnimation = useAnimatedStyle(() => {
-    return {
-      color: theme === "dark" ? withTiming("#fff") : withTiming("black"),
-    };
-  });
+  const backgroundColor = themes.theme === "dark" ? "#121212" : "#fff";
+  const headerBackgroundColor = themes.theme === "dark" ? "#121212" : "#fff";
+  const menuItemBackgroundColor = themes.theme === "dark" ? "#22272B" : "#fff";
+  const textColor = themes.theme === "dark" ? "#fff" : "black";
 
   const MenuItem = ({
     icon,
@@ -84,87 +43,122 @@ export default function Page({
     last?: boolean;
   }) => {
     return (
-      <Animated.View style={[menuItemBackgroundColorAnimation]}>
-        <TouchableOpacity
-          style={[styles.menuItem, !last && styles.menuItemBorder]}
-        >
-          <Animated.View
-            style={[styles.menuItemContent, menuItemBackgroundColorAnimation]}
-          >
-            <Animated.View style={styles.menuItemLeft}>
+      <View
+        style={[
+          styles.menuItem,
+          !last && styles.menuItemBorder,
+          { backgroundColor: menuItemBackgroundColor },
+        ]}
+      >
+        <TouchableOpacity>
+          <View style={styles.menuItemContent}>
+            <View style={styles.menuItemLeft}>
               <Ionicons
                 name={icon}
                 size={20}
                 color="#666"
                 style={styles.menuItemIcon}
               />
-              <Animated.View style={styles.menuItemTextContainer}>
-                <Animated.Text
-                  style={[styles.menuItemText, textColorAnimation]}
-                >
+              <View style={styles.menuItemTextContainer}>
+                <Text style={[styles.menuItemText, { color: textColor }]}>
                   {title}
-                </Animated.Text>
+                </Text>
                 {subtitle && (
-                  <Animated.Text
-                    style={[styles.menuItemSubtext, textColorAnimation]}
-                  >
-                    {subtitle}
-                  </Animated.Text>
+                  <Text style={styles.menuItemSubtext}>{subtitle}</Text>
                 )}
-              </Animated.View>
-            </Animated.View>
+              </View>
+            </View>
             <Ionicons name="chevron-forward" size={20} color="#666" />
-          </Animated.View>
+          </View>
         </TouchableOpacity>
-      </Animated.View>
+      </View>
     );
+  };
+
+  const ToggleMenuItem = ({
+    icon,
+    title,
+    subtitle,
+    last = false,
+    value,
+    onValueChange,
+  }: {
+    icon: keyof typeof Ionicons.glyphMap;
+    title: string;
+    subtitle: string;
+    last?: boolean;
+    value: boolean;
+    onValueChange: (newValue: boolean) => void;
+  }) => {
+    return (
+      <View
+        style={[
+          styles.menuItem,
+          !last && styles.menuItemBorder,
+          { backgroundColor: menuItemBackgroundColor },
+        ]}
+      >
+        <Pressable onPress={() => onValueChange(!value)}>
+          <View style={styles.menuItemContent}>
+            <View style={styles.menuItemLeft}>
+              <Ionicons
+                name={icon}
+                size={20}
+                color="#666"
+                style={styles.menuItemIcon}
+              />
+              <View style={styles.menuItemTextContainer}>
+                <Text style={[styles.menuItemText, { color: textColor }]}>
+                  {title}
+                </Text>
+                {subtitle && (
+                  <Text style={styles.menuItemSubtext}>{subtitle}</Text>
+                )}
+              </View>
+            </View>
+            <CustomSwitch value={value} onValueChange={onValueChange} />
+          </View>
+        </Pressable>
+      </View>
+    );
+  };
+
+  const handleThemeChange = (mode: ThemeMode) => {
+    console.log(`Changing theme to: ${mode}`);
+    themes.toggleTheme(mode);
   };
 
   return (
     <SafeAreaView style={[styles.container, { paddingTop: insets.top }]}>
       {/* Header */}
-      <Animated.View style={styles.header}>
+      <View style={[styles.header, { backgroundColor: headerBackgroundColor }]}>
         <StatusBar
           animated={true}
-          barStyle={theme === "dark" ? "light-content" : "dark-content"}
-          backgroundColor={theme === "dark" ? "#000" : "#fff"}
+          barStyle={themes.theme === "dark" ? "light-content" : "dark-content"}
+          backgroundColor={
+            themes.theme === "dark"
+              ? "#121212"
+              : themes.theme === "light"
+              ? "#fff"
+              : colorScheme === "dark"
+              ? "#121212"
+              : "#fff"
+          }
         />
-        <Animated.Text style={styles.headerTitle}>Settings</Animated.Text>
-      </Animated.View>
+        <Text style={styles.headerTitle}>Settings</Text>
+      </View>
 
-      <Animated.ScrollView style={[backgroundColorAnimation, { paddingBottom: BottomTabHeight}]}>
+      <ScrollView style={{ backgroundColor }}>
         {/* Premium Card */}
         <TouchableOpacity style={styles.premiumCard}>
-          <Animated.Text style={styles.premiumTitle}>
-            Premium Membership 🚀
-          </Animated.Text>
-          <Animated.Text style={styles.premiumSubtitle}>
-            Upgrade for more features
-          </Animated.Text>
+          <Text style={[styles.premiumTitle]}>Premium Membership 🚀</Text>
+          <Text style={styles.premiumSubtitle}>Upgrade for more features</Text>
         </TouchableOpacity>
 
-        {/* Dark Mode Switch */}
-        <Switch
-          value={darkMode}
-          onValueChange={(value) => {
-            setDarkMode(value);
-            EventRegister.emit("ChangeTheme", value);
-          }}
-        />
-
         {/* Account Section */}
-        <Animated.View style={[styles.section]}>
-          <Animated.Text
-            style={[
-              styles.sectionTitle,
-              ,
-              { color: themes.color },
-              textColorAnimation,
-            ]}
-          >
-            Account
-          </Animated.Text>
-          <Animated.View style={styles.sectionContent}>
+        <View style={[styles.section]}>
+          <Text style={styles.sectionTitle}>Account</Text>
+          <View style={styles.sectionContent}>
             <MenuItem
               icon="person-outline"
               title="Profile"
@@ -181,32 +175,29 @@ export default function Page({
               subtitle="Push, email alerts"
               last
             />
-          </Animated.View>
-        </Animated.View>
+          </View>
+        </View>
 
         {/* Preferences Section */}
-        <Animated.View style={styles.section}>
-          <Animated.Text style={[styles.sectionTitle, textColorAnimation]}>
-            Preferences
-          </Animated.Text>
-          <Animated.View style={styles.sectionContent}>
-            <MenuItem
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Preferences</Text>
+          <View style={styles.sectionContent}>
+            <ToggleMenuItem
               icon="language-outline"
               title="Language"
               subtitle="App language"
+              value={false}
+              onValueChange={() => {}}
             />
-
             <MenuItem
               icon="card-outline"
               title="Payment method"
               subtitle="Preferred payment method"
             />
-            <CustomMenuItem
+            <MenuItem
               icon="contrast-outline"
               title="Theme"
               subtitle="Light, dark mode"
-              bottomSheetRef={bottomSheetRef}
-              theme={theme}
             />
             <MenuItem
               icon="calendar-outline"
@@ -214,15 +205,13 @@ export default function Page({
               subtitle="Seats, routes"
               last
             />
-          </Animated.View>
-        </Animated.View>
+          </View>
+        </View>
 
         {/* Support Section */}
-        <Animated.View style={styles.section}>
-          <Animated.Text style={[styles.sectionTitle, textColorAnimation]}>
-            Support
-          </Animated.Text>
-          <Animated.View style={styles.sectionContent}>
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Support</Text>
+          <View style={styles.sectionContent}>
             <MenuItem
               icon="chatbubble-outline"
               title="Feedback"
@@ -234,15 +223,13 @@ export default function Page({
               subtitle="FAQs, guides, contact support"
               last
             />
-          </Animated.View>
-        </Animated.View>
+          </View>
+        </View>
 
         {/* Legal Section */}
-        <Animated.View style={styles.section}>
-          <Animated.Text style={[styles.sectionTitle, textColorAnimation]}>
-            More
-          </Animated.Text>
-          <Animated.View style={styles.sectionContent}>
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>More</Text>
+          <View style={styles.sectionContent}>
             <MenuItem
               icon="document-text-outline"
               title="Terms and Conditions"
@@ -254,27 +241,30 @@ export default function Page({
               subtitle="Data protection"
               last
             />
-          </Animated.View>
-        </Animated.View>
+          </View>
+        </View>
 
         {/* Logout Button */}
         <TouchableOpacity style={styles.logoutButton}>
-          <Animated.Text style={[styles.logoutText, textColorAnimation]}>
-            Logout
-          </Animated.Text>
+          <Text style={styles.logoutText}>Logout</Text>
         </TouchableOpacity>
-        {/* <SystemBars
-          animated={true}
-          barStyle={theme === "dark" ? "light-content" : "dark-content"}
-        /> */}
-      </Animated.ScrollView>
-      <BottomSheet
-        ref={bottomSheetRef}
-        setTheme={setTheme}
-        theme={theme}
-        setThemeSwitch={setThemeSwitch}
-        themeSwitch={themeSwitch}
-      />
+
+        {/* Theme Toggle Section */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Select Theme</Text>
+          <View style={styles.themeToggleContainer}>
+            <TouchableOpacity onPress={() => handleThemeChange("light")}>
+              <Text style={styles.themeToggleText}>Light</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => handleThemeChange("dark")}>
+              <Text style={styles.themeToggleText}>Dark</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => handleThemeChange("system")}>
+              <Text style={styles.themeToggleText}>System</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -282,6 +272,7 @@ export default function Page({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: "center",
     backgroundColor: "#fff",
   },
   header: {
@@ -362,7 +353,7 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   logoutButton: {
-    marginBottom: 100,
+    marginBottom: 30,
     marginTop: 32,
     padding: 16,
     alignItems: "center",
@@ -370,5 +361,15 @@ const styles = StyleSheet.create({
   logoutText: {
     color: "#666",
     fontSize: 16,
+  },
+  themeToggleContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    marginVertical: 20,
+    marginBottom: 90,
+  },
+  themeToggleText: {
+    fontSize: 16,
+    color: "#666",
   },
 });

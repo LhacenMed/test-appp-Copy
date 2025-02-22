@@ -8,6 +8,8 @@ import Animated, {
   withSpring,
   withTiming,
 } from "react-native-reanimated";
+import { useState, useContext } from "react";
+import { ThemeContext } from "../../context/ThemeContext";
 
 type IconKeys = "Home" | "Explore" | "Bookings" | "Settings";
 
@@ -29,6 +31,10 @@ const TabBarButton: React.FC<TabBarButtonProps> = ({
   const scale = useSharedValue(0);
   const circleOpacity = useSharedValue(0);
   const borderOpacity = useSharedValue(0);
+  const { theme } = useContext(ThemeContext);
+  const buttonTextColor = theme === "dark" ? "#fff" : "#000";
+  const circleBackgroundColor =
+    theme === "dark" ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.1)";
 
   useEffect(() => {
     scale.value = withSpring(isFocused ? 1 : 0, {
@@ -87,7 +93,13 @@ const TabBarButton: React.FC<TabBarButtonProps> = ({
       style={styles.tabbarItem}
     >
       {/* Circular Background */}
-      <Animated.View style={[styles.circleBackground, animatedCircleStyle]} />
+      <Animated.View
+        style={[
+          styles.circleBackground,
+          { backgroundColor: circleBackgroundColor },
+          animatedCircleStyle,
+        ]}
+      />
 
       {/* Icon */}
       <Animated.View style={animatedIconStyle}>
@@ -101,7 +113,7 @@ const TabBarButton: React.FC<TabBarButtonProps> = ({
       <Animated.Text
         style={[
           {
-            color: isFocused ? "rgb(0, 0, 0)" : "rgb(0, 0, 0)",
+            color: buttonTextColor,
             fontSize: 11,
           },
           animatedTextStyle,

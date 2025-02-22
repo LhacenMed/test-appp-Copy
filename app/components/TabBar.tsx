@@ -4,7 +4,7 @@ import {
   BottomTabNavigationOptions,
 } from "@react-navigation/bottom-tabs";
 import TabBarButton from "./TabBarButton";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import Animated, {
   ReduceMotion,
   useAnimatedStyle,
@@ -12,6 +12,7 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 import { BlurView } from "expo-blur";
+import { ThemeContext } from "../../context/ThemeContext";
 
 interface CustomTabNavigationOptions extends BottomTabNavigationOptions {
   blurEnabled?: boolean;
@@ -22,6 +23,9 @@ export default function TabBar({
   descriptors,
   navigation,
 }: BottomTabBarProps) {
+  const { theme } = useContext(ThemeContext);
+  const backgroundColor = theme === "dark" ? "#121212" : "#fff";
+
   const [dimensions, setDimensions] = useState({ height: 20, width: 100 });
 
   const buttonWidth = dimensions.width / state.routes.length;
@@ -47,7 +51,10 @@ export default function TabBar({
     ).blurEnabled;
 
   const TabBarContent = (
-    <View onLayout={onTabbarLayout} style={styles.tabbar}>
+    <View
+      onLayout={onTabbarLayout}
+      style={[styles.tabbar, { backgroundColor }]}
+    >
       <Animated.View
         style={[
           animatedStyle,
@@ -120,9 +127,7 @@ export default function TabBar({
       {TabBarContent}
     </BlurView>
   ) : (
-    <View style={[styles.blurView, { backgroundColor: "#fff" }]}>
-      {TabBarContent}
-    </View>
+    <View style={styles.blurView}>{TabBarContent}</View>
   );
 }
 
@@ -141,6 +146,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingVertical: 10,
+    paddingBottom: Platform.OS === "android" ? 20 : 10,
     marginBottom: Platform.OS === "ios" ? 15 : 0,
   },
 });

@@ -3,7 +3,6 @@ import {
   StyleSheet,
   TouchableOpacity,
   SafeAreaView,
-  useColorScheme,
   StatusBar,
   Pressable,
   View,
@@ -24,7 +23,6 @@ export default function Page({
 }) {
   const insets = useSafeAreaInsets();
   const themes = useContext(ThemeContext);
-  const colorScheme = useColorScheme();
 
   const backgroundColor = themes.theme === "dark" ? "#121212" : "#fff";
   const headerBackgroundColor = themes.theme === "dark" ? "#121212" : "#fff";
@@ -137,10 +135,6 @@ export default function Page({
           barStyle={themes.theme === "dark" ? "light-content" : "dark-content"}
           backgroundColor={
             themes.theme === "dark"
-              ? "#121212"
-              : themes.theme === "light"
-              ? "#fff"
-              : colorScheme === "dark"
               ? "#121212"
               : "#fff"
           }

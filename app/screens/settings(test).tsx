@@ -1,10 +1,9 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   View,
   Text,
   StyleSheet,
   TouchableWithoutFeedback,
-  TouchableOpacity,
   SafeAreaView,
   StatusBar,
   ScrollView,
@@ -18,11 +17,19 @@ import * as FileSystem from "expo-file-system";
 import * as MediaLibrary from "expo-media-library";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import MenuItem from "../components/MenuItem";
-import ColorSchemeModal from "../components/ColorSchemeModal";
+import ColorSchemePopup from "../components/ColorSchemePopup";
+import { ThemeContext } from "context/ThemeContext";
+import { ThemeMode } from "context/ThemeContext";
 
-const ProfileScreen = () => {
+const Page = () => {
   const insets = useSafeAreaInsets();
   const [modalVisible, setModalVisible] = useState(false);
+  const themes = useContext(ThemeContext);
+
+  const backgroundColor =
+    themes.theme === "dark" ? "#171717" : "rgb(249, 249, 249)";
+  const headerTextColor =
+    themes.theme === "dark" ? "rgb(249, 249, 249)" : "#171717";
 
   const generatePDF = async () => {
     try {
@@ -42,7 +49,7 @@ const ProfileScreen = () => {
       `;
 
       // Generate the PDF file
-      const file = await(Print as any).printToFileAsync({
+      const file = await (Print as any).printToFileAsync({
         html: htmlContent,
         base64: false,
       });
@@ -88,28 +95,45 @@ const ProfileScreen = () => {
   };
 
   const handleColorSchemeSelect = (scheme: string) => {
-    console.log("Selected Color Scheme:", scheme);
-    // Handle the selected color scheme here
+    // Update the theme when a new scheme is selected
+    themes.toggleTheme(scheme as ThemeMode);
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#171717" />
-      <View style={[styles.header, { top: insets.top }]}>
+      <StatusBar
+        animated={true}
+        barStyle={themes.theme === "dark" ? "light-content" : "dark-content"}
+        backgroundColor={
+          themes.theme === "dark" ? "#171717" : "rgb(249, 249, 249)"
+        }
+      />
+      <View
+        style={[
+          styles.header,
+          { top: insets.top, backgroundColor: backgroundColor },
+        ]}
+      >
         <View style={styles.headerLeftContainer}>
           <TouchableWithoutFeedback>
-            <Icon name="chevron-left" size={28} color="#FFFFFF" />
+            <Icon name="chevron-left" size={30} color={headerTextColor} />
           </TouchableWithoutFeedback>
         </View>
         <View style={styles.headerTitleContainer}>
-          <Text style={styles.headerTitle}>Profile</Text>
+          <Text style={[styles.headerTitle, { color: headerTextColor }]}>
+            Settings
+          </Text>
         </View>
         <View style={styles.headerRightContainer} />
       </View>
 
       <ScrollView
-        style={[styles.scrollViewContainer, { marginTop: insets.top }]}
+        style={[
+          styles.scrollViewContainer,
+          { marginTop: insets.top, backgroundColor: backgroundColor },
+        ]}
         contentContainerStyle={{ paddingTop: 60 }}
+        scrollEnabled={!modalVisible}
       >
         {/* Profile Section */}
         <Text style={styles.firstSectionTitle}>Profile</Text>
@@ -177,7 +201,7 @@ const ProfileScreen = () => {
             onPress={() => setModalVisible(true)}
           />
           <MenuItem
-            icon="language-outline"
+            icon="earth"
             title="App Language"
             value="English"
             isFirst={false}
@@ -197,32 +221,19 @@ const ProfileScreen = () => {
           />
         </View>
 
-        {/* Logout Section */}
+        {/* Danger Zone */}
         <View style={styles.miniSection}>
           <MenuItem
             icon="log-out-outline"
             title="Log out"
-            isFirst
-            isLast
-            showChevron={false}
-          />
-        </View>
-
-        {/* Danger Zone */}
-        <View style={styles.miniSection}>
-          <MenuItem
-            icon="trash-outline"
-            title="Delete all chats"
             isDanger
             isFirst
-            isLast={false}
             showChevron={false}
           />
           <MenuItem
             icon="person-remove-outline"
             title="Delete account"
             isDanger
-            isFirst={false}
             isLast
             showChevron={false}
           />
@@ -233,7 +244,7 @@ const ProfileScreen = () => {
           <Button title="Generate PDF" onPress={generatePDF} />
         </View>
 
-        <ColorSchemeModal
+        <ColorSchemePopup
           visible={modalVisible}
           onClose={() => setModalVisible(false)}
           onSelect={handleColorSchemeSelect}
@@ -274,7 +285,6 @@ const styles = StyleSheet.create({
     width: 28,
   },
   headerTitle: {
-    color: "#FFFFFF",
     fontSize: 16,
     fontWeight: "600",
   },
@@ -294,13 +304,13 @@ const styles = StyleSheet.create({
   section: {
     marginHorizontal: 20,
     backgroundColor: "#2A2A2A",
-    borderRadius: 17,
+    borderRadius: 18,
     marginBottom: 8,
   },
   miniSection: {
     marginHorizontal: 20,
     backgroundColor: "#2A2A2A",
-    borderRadius: 17,
+    borderRadius: 18,
     marginTop: 16,
     marginBottom: 8,
   },
@@ -317,4 +327,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ProfileScreen;
+export default Page;

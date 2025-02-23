@@ -1,45 +1,46 @@
 {
-  "expo": {
-    "name": "Firebase-auth-login-app",
-    "slug": "Firebase-auth-login-app",
-    "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "./assets/logo6.png",
-    "userInterfaceStyle": "light",
-    "newArchEnabled": false,
-    "splash": {
-      "image": "./assets/splash-icon.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
-    "ios": {
-      "bundleIdentifier": "com.lhacenmed.Firebaseauthloginapp",
-      "buildNumber": "1.0.0",
-      "supportsTablet": true
-    },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      },
-      "softwareKeyboardLayoutMode": "pan",
-      "package": "com.lhacenmed.Firebaseauthloginapp",
-      "targetSdkVersion": 28
-    },
-    "web": {
-      "favicon": "./assets/favicon.png"
-    },
-    "plugins": [
-      "expo-router"
-    ],
-    "extra": {
-      "router": {
-        "origin": false
-      },
-      "eas": {
-        "projectId": "bce761d7-1668-4465-a642-c2b6ac372607"
-      }
-    },
-    "owner": "lhacenmed2"
-  }
+    "expo": {
+        "name": "AsfarGo",
+        "slug": "asfar-go",
+        "scheme": "asfar-go",
+        "version": "1.0.0",
+        "orientation": "portrait",
+        "icon": "./assets/logo6.png",
+        "userInterfaceStyle": "automatic",
+        "newArchEnabled": false,
+        "splash": {
+            "image": "./assets/logo6.png",
+            "resizeMode": "contain",
+            "backgroundColor": "#ffffff"
+        },
+        "ios": {
+            "bundleIdentifier": "com.lhacenmed.Firebaseauthloginapp",
+            "buildNumber": "1.0.0",
+            "supportsTablet": true
+        },
+        "android": {
+            "adaptiveIcon": {
+                "foregroundImage": "./assets/logo6.png",
+                "backgroundColor": "#ffffff"
+            },
+            "softwareKeyboardLayoutMode": "pan",
+            "package": "com.lhacenmed.Firebaseauthloginapp",
+            "targetSdkVersion": 28
+        },
+        "web": {
+            "favicon": "./assets/favicon.png"
+        },
+        "plugins": [
+            "expo-router"
+        ],
+        "extra": {
+            "router": {
+                "origin": false
+            },
+            "eas": {
+                "projectId": "bce761d7-1668-4465-a642-c2b6ac372607"
+            }
+        },
+        "owner": "lhacenmed2"
+    }
 }

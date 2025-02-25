@@ -1,5 +1,11 @@
-import React, { useRef, useEffect } from "react";
-import { StyleSheet, View, Pressable, Animated } from "react-native";
+import React, { useRef, useEffect, useState } from "react";
+import {
+  StyleSheet,
+  View,
+  Pressable,
+  Animated,
+  ActivityIndicator,
+} from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import CustomText from "./CustomText";
 import { BottomSheetMethods } from "./BottomSheet";
@@ -11,6 +17,8 @@ interface LocationInputsProps {
 const LocationInputs: React.FC<LocationInputsProps> = ({ bottomSheetRef }) => {
   const animatedBgFrom = useRef(new Animated.Value(0)).current;
   const animatedBgTo = useRef(new Animated.Value(0)).current;
+  const [cityName, setCityName] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const interpolatedBgFrom = animatedBgFrom.interpolate({
     inputRange: [0, 1],
@@ -69,6 +77,7 @@ const LocationInputs: React.FC<LocationInputsProps> = ({ bottomSheetRef }) => {
 
   useEffect(() => {
     const fetchUserApiAddress = async () => {
+      setLoading(true);
       try {
         const userApiAddress = await getUserApiAddress();
         console.log("User API Address:", userApiAddress.ip);
@@ -78,8 +87,11 @@ const LocationInputs: React.FC<LocationInputsProps> = ({ bottomSheetRef }) => {
           userApiAddress.region,
           userApiAddress.country
         );
+        setCityName(userApiAddress.city);
       } catch (error) {
         console.error("Error fetching user API address:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -100,7 +112,23 @@ const LocationInputs: React.FC<LocationInputsProps> = ({ bottomSheetRef }) => {
           onPress={showModal}
           style={styles.pressable}
         >
-          <CustomText style={styles.inputLabel}>From?</CustomText>
+          <CustomText
+            style={cityName ? styles.inputLabelWhite : styles.inputLabelGrey}
+          >
+            {cityName || "From?"}
+            {loading && (
+              <ActivityIndicator
+                size="small"
+                color="#666666"
+                style={{
+                  position: "absolute",
+                  height: 10,
+                  width: 10,
+                  transform: [{ translateX: 10 }],
+                }}
+              />
+            )}
+          </CustomText>
         </Pressable>
       </Animated.View>
       <View style={styles.border} />
@@ -164,6 +192,18 @@ const styles = StyleSheet.create({
   },
   inputLabel: {
     color: "#666666",
+    fontSize: 16,
+  },
+  inputLabelGrey: {
+    color: "#666666",
+    fontSize: 16,
+  },
+  inputLabelWhite: {
+    color: "#FFFFFF",
+    fontSize: 16,
+  },
+  inputValue: {
+    color: "#00FF00",
     fontSize: 16,
   },
   swapButton: {

@@ -1,7 +1,8 @@
-import { StyleSheet, useWindowDimensions } from "react-native";
+import { StyleSheet, useWindowDimensions, View, Text } from "react-native";
 import React, {
   forwardRef,
   useCallback,
+  useContext,
   useImperativeHandle,
   useState,
 } from "react";
@@ -13,9 +14,8 @@ import Animated, {
 } from "react-native-reanimated";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import BackDrop from "./BackDrop";
-import Switch from "./Switch";
-import Icon from "./Icon";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { ThemeContext } from "../../context/ThemeContext";
 
 type Props = {
   setTheme: React.Dispatch<React.SetStateAction<string | null | undefined>>;
@@ -30,13 +30,14 @@ export interface BottomSheetMethods {
 }
 
 const BottomSheet = forwardRef<BottomSheetMethods, Props>(
-  ({ setTheme, theme, setThemeSwitch, themeSwitch }, ref) => {
+  ({}, ref) => {
     const insets = useSafeAreaInsets();
     const { width } = useWindowDimensions();
     const [bottomSheetHeight, setBottomSheetHeight] = useState(1000);
     const OPEN = 0;
     const CLOSE = bottomSheetHeight + insets.bottom;
     const translateY = useSharedValue(CLOSE);
+    const { theme } = useContext(ThemeContext);
 
     const expand = useCallback(() => {
       translateY.value = withTiming(OPEN);
@@ -61,25 +62,17 @@ const BottomSheet = forwardRef<BottomSheetMethods, Props>(
       };
     });
 
-    const backgroundColorAnimation = useAnimatedStyle(() => {
-      return {
-        backgroundColor:
-          theme === "dark" ? withTiming("#22272B") : withTiming("#fff"),
-      };
-    });
+    const backgroundColorAnimation = {
+      backgroundColor: theme === "dark" ? "#121212" : "#fff",
+    };
 
-    const lineColorAnimation = useAnimatedStyle(() => {
-      return {
-        backgroundColor:
-          theme === "dark" ? withTiming("white") : withTiming("black"),
-      };
-    });
+    const lineColorAnimation = {
+      backgroundColor: theme === "dark" ? "white" : "black",
+    };
 
-    const textColorAnimation = useAnimatedStyle(() => {
-      return {
-        color: theme === "dark" ? withTiming("white") : withTiming("black"),
-      };
-    });
+    const textColorAnimation = {
+      color: theme === "dark" ? "white" : "black",
+    };
 
     const pan = Gesture.Pan()
       .onUpdate((event) => {
@@ -136,16 +129,16 @@ const BottomSheet = forwardRef<BottomSheetMethods, Props>(
               }
             }}
           >
-            <Animated.View style={[styles.line, lineColorAnimation]} />
-            <Animated.Text style={[styles.textTitle, textColorAnimation]}>
+            <View style={[styles.line, lineColorAnimation]} />
+            <Text style={[styles.textTitle, textColorAnimation]}>
               Choose a style
-            </Animated.Text>
-            <Animated.Text style={[styles.text, textColorAnimation]}>
+            </Text>
+            <Text style={[styles.text, textColorAnimation]}>
               Pop or subtle. Day or night.
-            </Animated.Text>
-            <Animated.Text style={[styles.text, textColorAnimation]}>
+            </Text>
+            <Text style={[styles.text, textColorAnimation]}>
               Customize your interface.
-            </Animated.Text>
+            </Text>
           </Animated.View>
         </GestureDetector>
       </>

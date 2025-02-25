@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect } from "react";
 import { StyleSheet, View, Pressable, Animated } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import CustomText from "./CustomText";
@@ -52,6 +52,39 @@ const LocationInputs: React.FC<LocationInputsProps> = ({ bottomSheetRef }) => {
     }
     console.log("Show modal called");
   };
+
+  const getUserApiAddress = async () => {
+    const response = await fetch("https://ipinfo.io/json");
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    return {
+      ip: data.ip,
+      city: data.city,
+      region: data.region,
+      country: data.country,
+    };
+  };
+
+  useEffect(() => {
+    const fetchUserApiAddress = async () => {
+      try {
+        const userApiAddress = await getUserApiAddress();
+        console.log("User API Address:", userApiAddress.ip);
+        console.log(
+          "User Location:",
+          userApiAddress.city,
+          userApiAddress.region,
+          userApiAddress.country
+        );
+      } catch (error) {
+        console.error("Error fetching user API address:", error);
+      }
+    };
+
+    fetchUserApiAddress();
+  }, []);
 
   return (
     <View style={styles.locationContainer}>

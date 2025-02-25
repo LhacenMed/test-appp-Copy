@@ -10,5 +10,7 @@
       "@firebase/auth": ["./node_modules/@firebase/auth/dist/index.rn.d.ts"]
     },
     "esModuleInterop": true,
+    "moduleResolution": "Node16",
+    "module": "Node16"
   }
 }

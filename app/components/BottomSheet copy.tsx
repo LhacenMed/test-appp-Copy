@@ -137,6 +137,7 @@ const BottomSheet = forwardRef<BottomSheetMethods, Props>(
             }}
           >
             <Animated.View style={[styles.line, lineColorAnimation]} />
+            <Icon theme={theme} />
             <Animated.Text style={[styles.textTitle, textColorAnimation]}>
               Choose a style
             </Animated.Text>
@@ -146,6 +147,12 @@ const BottomSheet = forwardRef<BottomSheetMethods, Props>(
             <Animated.Text style={[styles.text, textColorAnimation]}>
               Customize your interface.
             </Animated.Text>
+            <Switch
+              setTheme={setTheme}
+              theme={theme}
+              setThemeSwitch={setThemeSwitch}
+              themeSwitch={themeSwitch}
+            />
           </Animated.View>
         </GestureDetector>
       </>

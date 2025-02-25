@@ -30,9 +30,9 @@ const ColorSchemePopup: React.FC<ColorSchemePopupProps> = ({
   onClose,
   onSelect,
 }) => {
-  const [selectedScheme, setSelectedScheme] = useState("system");
-  const [isDonePressed, setIsDonePressed] = useState(false);
   const themes = useContext(ThemeContext);
+  const [selectedScheme, setSelectedScheme] = useState(themes.mode);
+  const [isDonePressed, setIsDonePressed] = useState(false);
 
   const backgroundColor = themes.theme === "dark" ? "#1E1E1E" : "#ffffff";
   const textColor = themes.theme === "dark" ? "#ffffff" : "#1E1E1E";

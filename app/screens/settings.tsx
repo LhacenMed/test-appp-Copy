@@ -1,369 +1,261 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import {
-  StyleSheet,
-  TouchableOpacity,
-  SafeAreaView,
-  StatusBar,
-  Pressable,
   View,
   Text,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  SafeAreaView,
+  StatusBar,
   ScrollView,
+  Button,
+  Alert,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import * as Print from "expo-print";
+import * as Sharing from "expo-sharing";
+import * as FileSystem from "expo-file-system";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { NavigationProp } from "@react-navigation/native";
-import CustomSwitch from "@/components/CustomSwitch";
+import MenuItem from "../components/MenuItem";
+import ColorSchemePopup from "../components/ColorSchemePopup";
+import { ThemeContext } from "context/ThemeContext";
+import { ThemeMode } from "context/ThemeContext";
 
-import { ThemeContext, ThemeMode } from "../../context/ThemeContext";
-
-export default function Page({
-  navigation,
-}: {
-  navigation: NavigationProp<any>;
-}) {
+const Page = () => {
   const insets = useSafeAreaInsets();
+  const [modalVisible, setModalVisible] = useState(false);
   const themes = useContext(ThemeContext);
 
-  const backgroundColor = themes.theme === "dark" ? "#121212" : "#fff";
-  const headerBackgroundColor = themes.theme === "dark" ? "#121212" : "#fff";
-  const menuItemBackgroundColor = themes.theme === "dark" ? "#22272B" : "#fff";
-  const textColor = themes.theme === "dark" ? "#fff" : "black";
+  const backgroundColor =
+    themes.theme === "dark" ? "#171717" : "rgb(249, 249, 249)";
+  const headerTextColor =
+    themes.theme === "dark" ? "rgb(249, 249, 249)" : "#171717";
 
-  const MenuItem = ({
-    icon,
-    title,
-    subtitle,
-    last = false,
-  }: {
-    icon: keyof typeof Ionicons.glyphMap;
-    title: string;
-    subtitle: string;
-    last?: boolean;
-  }) => {
-    return (
-      <View
-        style={[
-          styles.menuItem,
-          !last && styles.menuItemBorder,
-          { backgroundColor: menuItemBackgroundColor },
-        ]}
-      >
-        <TouchableOpacity>
-          <View style={styles.menuItemContent}>
-            <View style={styles.menuItemLeft}>
-              <Ionicons
-                name={icon}
-                size={20}
-                color="#666"
-                style={styles.menuItemIcon}
-              />
-              <View style={styles.menuItemTextContainer}>
-                <Text style={[styles.menuItemText, { color: textColor }]}>
-                  {title}
-                </Text>
-                {subtitle && (
-                  <Text style={styles.menuItemSubtext}>{subtitle}</Text>
-                )}
-              </View>
-            </View>
-            <Ionicons name="chevron-forward" size={20} color="#666" />
-          </View>
-        </TouchableOpacity>
-      </View>
-    );
-  };
-
-  const ToggleMenuItem = ({
-    icon,
-    title,
-    subtitle,
-    last = false,
-    value,
-    onValueChange,
-  }: {
-    icon: keyof typeof Ionicons.glyphMap;
-    title: string;
-    subtitle: string;
-    last?: boolean;
-    value: boolean;
-    onValueChange: (newValue: boolean) => void;
-  }) => {
-    return (
-      <View
-        style={[
-          styles.menuItem,
-          !last && styles.menuItemBorder,
-          { backgroundColor: menuItemBackgroundColor },
-        ]}
-      >
-        <Pressable onPress={() => onValueChange(!value)}>
-          <View style={styles.menuItemContent}>
-            <View style={styles.menuItemLeft}>
-              <Ionicons
-                name={icon}
-                size={20}
-                color="#666"
-                style={styles.menuItemIcon}
-              />
-              <View style={styles.menuItemTextContainer}>
-                <Text style={[styles.menuItemText, { color: textColor }]}>
-                  {title}
-                </Text>
-                {subtitle && (
-                  <Text style={styles.menuItemSubtext}>{subtitle}</Text>
-                )}
-              </View>
-            </View>
-            <CustomSwitch value={value} onValueChange={onValueChange} />
-          </View>
-        </Pressable>
-      </View>
-    );
-  };
-
-  const handleThemeChange = (mode: ThemeMode) => {
-    console.log(`Changing theme to: ${mode}`);
-    themes.toggleTheme(mode);
+  const handleColorSchemeSelect = (scheme: string) => {
+    // Update the theme when a new scheme is selected
+    themes.toggleTheme(scheme as ThemeMode);
   };
 
   return (
-    <SafeAreaView style={[styles.container, { paddingTop: insets.top }]}>
-      {/* Header */}
-      <View style={[styles.header, { backgroundColor: headerBackgroundColor }]}>
-        <StatusBar
-          animated={true}
-          barStyle={themes.theme === "dark" ? "light-content" : "dark-content"}
-          backgroundColor={
-            themes.theme === "dark"
-              ? "#121212"
-              : "#fff"
-          }
-        />
-        <Text style={styles.headerTitle}>Settings</Text>
+    <SafeAreaView style={styles.container}>
+      <StatusBar
+        barStyle={themes.theme === "dark" ? "light-content" : "dark-content"}
+        backgroundColor={
+          themes.theme === "dark" ? "#171717" : "rgb(249, 249, 249)"
+        }
+      />
+      <View
+        style={[
+          styles.header,
+          { top: insets.top, backgroundColor: backgroundColor },
+        ]}
+      >
+        <View style={styles.headerLeftContainer} />
+        <View style={styles.headerTitleContainer}>
+          <Text style={[styles.headerTitle, { color: headerTextColor }]}>
+            Settings
+          </Text>
+        </View>
+        <View style={styles.headerRightContainer} />
       </View>
 
-      <ScrollView style={{ backgroundColor }}>
-        {/* Premium Card */}
-        <TouchableOpacity style={styles.premiumCard}>
-          <Text style={[styles.premiumTitle]}>Premium Membership 🚀</Text>
-          <Text style={styles.premiumSubtitle}>Upgrade for more features</Text>
-        </TouchableOpacity>
-
-        {/* Account Section */}
-        <View style={[styles.section]}>
-          <Text style={styles.sectionTitle}>Account</Text>
-          <View style={styles.sectionContent}>
-            <MenuItem
-              icon="person-outline"
-              title="Profile"
-              subtitle="Personal info, picture"
-            />
-            <MenuItem
-              icon="lock-closed-outline"
-              title="Password"
-              subtitle="Change, reset password"
-            />
-            <MenuItem
-              icon="notifications-outline"
-              title="Notifications"
-              subtitle="Push, email alerts"
-              last
-            />
-          </View>
-        </View>
-
-        {/* Preferences Section */}
+      <ScrollView
+        style={[
+          styles.scrollViewContainer,
+          { top: insets.top, backgroundColor: backgroundColor },
+        ]}
+        contentContainerStyle={{ paddingTop: 60 }}
+        scrollEnabled={!modalVisible}
+      >
+        {/* Profile Section */}
+        <Text style={styles.firstSectionTitle}>Profile</Text>
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Preferences</Text>
-          <View style={styles.sectionContent}>
-            <ToggleMenuItem
-              icon="language-outline"
-              title="Language"
-              subtitle="App language"
-              value={false}
-              onValueChange={() => {}}
-            />
-            <MenuItem
-              icon="card-outline"
-              title="Payment method"
-              subtitle="Preferred payment method"
-            />
-            <MenuItem
-              icon="contrast-outline"
-              title="Theme"
-              subtitle="Light, dark mode"
-            />
-            <MenuItem
-              icon="calendar-outline"
-              title="Default Booking"
-              subtitle="Seats, routes"
-              last
-            />
-          </View>
+          <MenuItem
+            icon="mail-outline"
+            title="Email"
+            value="217acenmed653@gmail.com"
+            isFirst
+            isLast={false}
+            showValue={true}
+            showChevron={false}
+          />
+          <MenuItem
+            icon="logo-google"
+            title="Google"
+            value="Connected"
+            isFirst={false}
+            isLast
+            showValue={true}
+            showChevron={false}
+          />
         </View>
-
-        {/* Support Section */}
+        {/* About Section */}
+        <Text style={styles.sectionTitle}>About</Text>
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Support</Text>
-          <View style={styles.sectionContent}>
-            <MenuItem
-              icon="chatbubble-outline"
-              title="Feedback"
-              subtitle="Report bugs, suggestions"
-            />
-            <MenuItem
-              icon="help-circle-outline"
-              title="Help"
-              subtitle="FAQs, guides, contact support"
-              last
-            />
-          </View>
+          <MenuItem
+            icon="document-text-outline"
+            title="Terms of Use"
+            isFirst
+            isLast={false}
+          />
+          <MenuItem
+            icon="shield-outline"
+            title="Privacy Policy"
+            value=""
+            isFirst={false}
+            isLast={false}
+            showValue={true}
+            showChevron={true}
+          />
+          <MenuItem
+            icon="information-circle-outline"
+            title="Check for updates"
+            value="1.0.11(48)"
+            isFirst={false}
+            isLast
+            showValue={true}
+            showChevron={true}
+          />
         </View>
-
-        {/* Legal Section */}
+        {/* App Section */}
+        <Text style={styles.sectionTitle}>App</Text>
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>More</Text>
-          <View style={styles.sectionContent}>
-            <MenuItem
-              icon="document-text-outline"
-              title="Terms and Conditions"
-              subtitle="Usage rules"
-            />
-            <MenuItem
-              icon="shield-checkmark-outline"
-              title="Privacy Policy"
-              subtitle="Data protection"
-              last
-            />
-          </View>
+          <MenuItem
+            icon={
+              themes.mode === "system"
+                ? themes.theme === "dark"
+                  ? "moon-outline"
+                  : "sunny-outline"
+                : themes.mode === "dark"
+                ? "moon-outline"
+                : "sunny-outline"
+            }
+            title="Color Scheme"
+            value={themes.mode.charAt(0).toUpperCase() + themes.mode.slice(1)}
+            isFirst
+            isLast={false}
+            showValue={true}
+            showChevron={true}
+            onPress={() => setModalVisible(true)}
+          />
+          <MenuItem
+            icon="earth"
+            title="App Language"
+            value="English"
+            isFirst={false}
+            isLast
+            showValue={true}
+            showChevron={true}
+          />
         </View>
-
-        {/* Logout Button */}
-        <TouchableOpacity style={styles.logoutButton}>
-          <Text style={styles.logoutText}>Logout</Text>
-        </TouchableOpacity>
-
-        {/* Theme Toggle Section */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Select Theme</Text>
-          <View style={styles.themeToggleContainer}>
-            <TouchableOpacity onPress={() => handleThemeChange("light")}>
-              <Text style={styles.themeToggleText}>Light</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleThemeChange("dark")}>
-              <Text style={styles.themeToggleText}>Dark</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleThemeChange("system")}>
-              <Text style={styles.themeToggleText}>System</Text>
-            </TouchableOpacity>
-          </View>
+        {/* Contact Section */}
+        <View style={styles.miniSection}>
+          <MenuItem
+            icon="chatbubble-outline"
+            title="Contact us"
+            isFirst
+            isLast
+          />
         </View>
+        {/* Danger Zone */}
+        <View style={styles.miniSection}>
+          <MenuItem
+            icon="log-out-outline"
+            title="Log out"
+            isDanger
+            isFirst
+            showChevron={false}
+          />
+          <MenuItem
+            icon="person-remove-outline"
+            title="Delete account"
+            isDanger
+            isLast
+            showChevron={false}
+          />
+        </View>
+        <Text style={styles.footerText}>AsfarGo 2025 - All rights reserved.</Text>
+        <ColorSchemePopup
+          visible={modalVisible}
+          onClose={() => setModalVisible(false)}
+          onSelect={handleColorSchemeSelect}
+        />
       </ScrollView>
     </SafeAreaView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    backgroundColor: "#fff",
+    backgroundColor: "#171717",
   },
   header: {
-    flexDirection: "row",
-    alignItems: "center",
-    padding: 16,
-    paddingTop: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: "#eee",
-  },
-  headerTitle: {
-    fontSize: 24,
-    fontWeight: "600",
-  },
-  premiumCard: {
-    backgroundColor: "#6366F1",
-    margin: 16,
-    borderRadius: 12,
-    padding: 16,
-  },
-  premiumTitle: {
-    color: "#fff",
-    fontSize: 18,
-    fontWeight: "600",
-  },
-  premiumSubtitle: {
-    color: "#fff",
-    opacity: 0.8,
-    marginTop: 4,
-  },
-  section: {
-    marginTop: 24,
-  },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#000",
-    marginLeft: 16,
-    marginBottom: 8,
-  },
-  sectionContent: {
-    backgroundColor: "#fff",
-    borderTopWidth: 1,
-    borderBottomWidth: 1,
-    borderColor: "#f0f0f0",
-  },
-  menuItem: {
-    paddingVertical: 14,
-    paddingHorizontal: 16,
-  },
-  menuItemBorder: {
-    borderBottomWidth: 1,
-    borderBottomColor: "#f0f0f0",
-  },
-  menuItemContent: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-  },
-  menuItemLeft: {
-    flexDirection: "row",
-    alignItems: "center",
-    flex: 1,
-  },
-  menuItemIcon: {
-    marginRight: 12,
-  },
-  menuItemTextContainer: {
-    flex: 1,
-  },
-  menuItemText: {
-    fontSize: 16,
-    color: "#666",
-  },
-  menuItemSubtext: {
-    fontSize: 13,
-    color: "#999",
-    marginTop: 2,
-  },
-  logoutButton: {
-    marginBottom: 30,
-    marginTop: 32,
     padding: 16,
+    paddingTop: 5,
+    backgroundColor: "#171717",
+    zIndex: 1,
+    elevation: 3,
+  },
+  headerLeftContainer: {
+    width: 28,
+    alignItems: "flex-start",
+  },
+  headerTitleContainer: {
+    flex: 1,
     alignItems: "center",
   },
-  logoutText: {
-    color: "#666",
-    fontSize: 16,
+  headerRightContainer: {
+    width: 28,
+    alignItems: "flex-end",
   },
-  themeToggleContainer: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    marginVertical: 20,
-    marginBottom: 90,
-  },
-  themeToggleText: {
+  headerTitle: {
     fontSize: 16,
-    color: "#666",
+    fontWeight: "600",
+  },
+  firstSectionTitle: {
+    color: "#666666",
+    fontSize: 12,
+    marginLeft: 35,
+    marginBottom: 8,
+  },
+  sectionTitle: {
+    color: "#666666",
+    fontSize: 12,
+    marginLeft: 35,
+    marginTop: 16,
+    marginBottom: 8,
+  },
+  section: {
+    marginHorizontal: 20,
+    backgroundColor: "#2A2A2A",
+    borderRadius: 18,
+    marginBottom: 8,
+  },
+  miniSection: {
+    marginHorizontal: 20,
+    backgroundColor: "#2A2A2A",
+    borderRadius: 18,
+    marginTop: 16,
+    marginBottom: 8,
+  },
+  footerText: {
+    color: "#666666",
+    fontSize: 12,
+    textAlign: "center",
+    marginTop: 24,
+    marginBottom: 130,
+  },
+  scrollViewContainer: {
+    flex: 1,
+    backgroundColor: "#171717",
   },
 });
+
+export default Page;

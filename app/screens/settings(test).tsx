@@ -20,6 +20,7 @@ import MenuItem from "../components/MenuItem";
 import ColorSchemePopup from "../components/ColorSchemePopup";
 import { ThemeContext } from "context/ThemeContext";
 import { ThemeMode } from "context/ThemeContext";
+import { OverscrollView } from "react-native-overscroll2";
 
 const Page = () => {
   const insets = useSafeAreaInsets();
@@ -107,6 +108,7 @@ const Page = () => {
         backgroundColor={
           themes.theme === "dark" ? "#171717" : "rgb(249, 249, 249)"
         }
+        
       />
       <View
         style={[
@@ -127,129 +129,131 @@ const Page = () => {
         <View style={styles.headerRightContainer} />
       </View>
 
-      <ScrollView
-        style={[
-          styles.scrollViewContainer,
-          { marginTop: insets.top, backgroundColor: backgroundColor },
-        ]}
-        contentContainerStyle={{ paddingTop: 60 }}
-        scrollEnabled={!modalVisible}
-      >
-        {/* Profile Section */}
-        <Text style={styles.firstSectionTitle}>Profile</Text>
-        <View style={styles.section}>
-          <MenuItem
-            icon="mail-outline"
-            title="Email"
-            value="217acenmed653@gmail.com"
-            isFirst
-            isLast={false}
-            showValue={true}
-            showChevron={false}
+        <ScrollView
+          style={[
+            styles.scrollViewContainer,
+            { top: insets.top, backgroundColor: backgroundColor },
+          ]}
+          contentContainerStyle={{ paddingTop: 60 }}
+          scrollEnabled={!modalVisible}
+        >
+          {/* Profile Section */}
+          <Text style={styles.firstSectionTitle}>Profile</Text>
+          <View style={styles.section}>
+            <MenuItem
+              icon="mail-outline"
+              title="Email"
+              value="217acenmed653@gmail.com"
+              isFirst
+              isLast={false}
+              showValue={true}
+              showChevron={false}
+            />
+            <MenuItem
+              icon="logo-google"
+              title="Google"
+              value="Connected"
+              isFirst={false}
+              isLast
+              showValue={true}
+              showChevron={false}
+            />
+          </View>
+          {/* About Section */}
+          <Text style={styles.sectionTitle}>About</Text>
+          <View style={styles.section}>
+            <MenuItem
+              icon="document-text-outline"
+              title="Terms of Use"
+              isFirst
+              isLast={false}
+            />
+            <MenuItem
+              icon="shield-outline"
+              title="Privacy Policy"
+              value=""
+              isFirst={false}
+              isLast={false}
+              showValue={true}
+              showChevron={true}
+            />
+            <MenuItem
+              icon="information-circle-outline"
+              title="Check for updates"
+              value="1.0.11(48)"
+              isFirst={false}
+              isLast
+              showValue={true}
+              showChevron={true}
+            />
+          </View>
+          {/* App Section */}
+          <Text style={styles.sectionTitle}>App</Text>
+          <View style={styles.section}>
+            <MenuItem
+              icon={
+                themes.mode === "system"
+                  ? themes.theme === "dark"
+                    ? "moon-outline"
+                    : "sunny-outline"
+                  : themes.mode === "dark"
+                  ? "moon-outline"
+                  : "sunny-outline"
+              }
+              title="Color Scheme"
+              value={themes.mode.charAt(0).toUpperCase() + themes.mode.slice(1)}
+              isFirst
+              isLast={false}
+              showValue={true}
+              showChevron={true}
+              onPress={() => setModalVisible(true)}
+            />
+            <MenuItem
+              icon="earth"
+              title="App Language"
+              value="English"
+              isFirst={false}
+              isLast
+              showValue={true}
+              showChevron={true}
+            />
+          </View>
+          {/* Contact Section */}
+          <View style={styles.miniSection}>
+            <MenuItem
+              icon="chatbubble-outline"
+              title="Contact us"
+              isFirst
+              isLast
+            />
+          </View>
+          {/* Danger Zone */}
+          <View style={styles.miniSection}>
+            <MenuItem
+              icon="log-out-outline"
+              title="Log out"
+              isDanger
+              isFirst
+              showChevron={false}
+            />
+            <MenuItem
+              icon="person-remove-outline"
+              title="Delete account"
+              isDanger
+              isLast
+              showChevron={false}
+            />
+          </View>
+          <Text style={styles.footerText}>AI-generated, for reference only</Text>
+          <View style={{ marginBottom: 100, paddingHorizontal: 150 }}>
+            <Button title="Generate PDF" onPress={generatePDF} />
+          </View>
+          <ColorSchemePopup
+            visible={modalVisible}
+            onClose={() => setModalVisible(false)}
+            onSelect={handleColorSchemeSelect}
           />
-          <MenuItem
-            icon="logo-google"
-            title="Google"
-            value="Connected"
-            isFirst={false}
-            isLast
-            showValue={true}
-            showChevron={false}
-          />
-        </View>
-
-        {/* About Section */}
-        <Text style={styles.sectionTitle}>About</Text>
-        <View style={styles.section}>
-          <MenuItem
-            icon="document-text-outline"
-            title="Terms of Use"
-            isFirst
-            isLast={false}
-          />
-          <MenuItem
-            icon="shield-outline"
-            title="Privacy Policy"
-            value=""
-            isFirst={false}
-            isLast={false}
-            showValue={true}
-            showChevron={true}
-          />
-          <MenuItem
-            icon="information-circle-outline"
-            title="Check for updates"
-            value="1.0.11(48)"
-            isFirst={false}
-            isLast
-            showValue={true}
-            showChevron={true}
-          />
-        </View>
-
-        {/* App Section */}
-        <Text style={styles.sectionTitle}>App</Text>
-        <View style={styles.section}>
-          <MenuItem
-            icon="moon-outline"
-            title="Color Scheme"
-            value="System"
-            isFirst
-            isLast={false}
-            showValue={true}
-            showChevron={true}
-            onPress={() => setModalVisible(true)}
-          />
-          <MenuItem
-            icon="earth"
-            title="App Language"
-            value="English"
-            isFirst={false}
-            isLast
-            showValue={true}
-            showChevron={true}
-          />
-        </View>
-
-        {/* Contact Section */}
-        <View style={styles.miniSection}>
-          <MenuItem
-            icon="chatbubble-outline"
-            title="Contact us"
-            isFirst
-            isLast
-          />
-        </View>
-
-        {/* Danger Zone */}
-        <View style={styles.miniSection}>
-          <MenuItem
-            icon="log-out-outline"
-            title="Log out"
-            isDanger
-            isFirst
-            showChevron={false}
-          />
-          <MenuItem
-            icon="person-remove-outline"
-            title="Delete account"
-            isDanger
-            isLast
-            showChevron={false}
-          />
-        </View>
-
-        <Text style={styles.footerText}>AI-generated, for reference only</Text>
-        <View style={{ marginBottom: 100, paddingHorizontal: 150 }}>
-          <Button title="Generate PDF" onPress={generatePDF} />
-        </View>
-
-        <ColorSchemePopup
-          visible={modalVisible}
-          onClose={() => setModalVisible(false)}
-          onSelect={handleColorSchemeSelect}
-        />
-      </ScrollView>
+        </ScrollView>
     </SafeAreaView>
   );
 };
@@ -270,7 +274,7 @@ const styles = StyleSheet.create({
     padding: 16,
     paddingTop: 5,
     backgroundColor: "#171717",
-    zIndex: 1000,
+    zIndex: 1,
     elevation: 3,
   },
   headerLeftContainer: {

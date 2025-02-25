@@ -44,6 +44,8 @@ const MenuItem: React.FC<MenuItemProps> = ({
     themes.theme === "dark" ? "#2A2A2A" : "rgb(241, 241, 241)";
   const dangerDimBackgroundColor =
     themes.theme === "dark" ? "#2A1F1F" : "#FFE8E8";
+  const borderBottomColor =
+    themes.theme === "dark" ? "#404040" : "rgb(210, 210, 210)";
   const normalTextColor = themes.theme === "dark" ? "#ffffff" : "#171717";
   const dangerTextColor = themes.theme === "dark" ? "#FF4545" : "#FF4545";
   const valueTextColor =
@@ -86,6 +88,8 @@ const MenuItem: React.FC<MenuItemProps> = ({
     borderTopRightRadius: isFirst ? 17 : 0,
     borderBottomLeftRadius: isLast ? 17 : 0,
     borderBottomRightRadius: isLast ? 17 : 0,
+    borderBottomWidth: isLast ? 0 : 1,
+    borderBottomColor: borderBottomColor,
     backgroundColor: animatedBackgroundColor,
   };
 
@@ -136,8 +140,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    padding: 14,
+    padding: 15,
     backgroundColor: "#2A2A2A",
+    borderBottomWidth: 1,
   },
   menuItemLeft: {
     flexDirection: "row",

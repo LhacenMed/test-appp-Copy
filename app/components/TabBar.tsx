@@ -25,6 +25,7 @@ export default function TabBar({
 }: BottomTabBarProps) {
   const { theme } = useContext(ThemeContext);
   const backgroundColor = theme === "dark" ? "#121212" : "#fff";
+  const borderTopColor = theme === "dark" ? "#1E1E1E" : "#eee";
 
   const [dimensions, setDimensions] = useState({ height: 20, width: 100 });
 
@@ -123,11 +124,17 @@ export default function TabBar({
   );
 
   return blurEnabled ? (
-    <BlurView intensity={50} tint="light" style={styles.blurView}>
+    <BlurView
+      intensity={50}
+      tint="light"
+      style={[styles.blurView, { borderTopColor: borderTopColor }]}
+    >
       {TabBarContent}
     </BlurView>
   ) : (
-    <View style={styles.blurView}>{TabBarContent}</View>
+    <View style={[styles.blurView, { borderTopColor: borderTopColor }]}>
+      {TabBarContent}
+    </View>
   );
 }
 

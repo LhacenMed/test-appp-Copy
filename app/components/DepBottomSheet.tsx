@@ -4,6 +4,7 @@ import {
   View,
   Text,
   Pressable,
+  ScrollView,
 } from "react-native";
 import React, {
   forwardRef,
@@ -40,20 +41,26 @@ const DepBottomSheet = forwardRef<DepBottomSheetMethods, Props>(
   ({ onCitySelect, onExpand, onClose }, ref) => {
     const insets = useSafeAreaInsets();
     const { width } = useWindowDimensions();
-    const [DepBottomSheetHeight, setDepBottomSheetHeight] = useState(1000);
+    const SHEET_HEIGHT = 700;
     const OPEN = 0;
-    const CLOSE = DepBottomSheetHeight + insets.bottom;
+    const CLOSE = SHEET_HEIGHT;
     const translateY = useSharedValue(CLOSE);
     const { theme } = useContext(ThemeContext);
     const [searchQuery, setSearchQuery] = useState<string>("");
 
     const expand = useCallback(() => {
-      translateY.value = withTiming(OPEN);
+      translateY.value = withSpring(OPEN, {
+        damping: 100,
+        stiffness: 400,
+      });
       onExpand();
     }, [translateY, onExpand]);
 
     const close = useCallback(() => {
-      translateY.value = withTiming(CLOSE);
+      translateY.value = withSpring(CLOSE, {
+        damping: 100,
+        stiffness: 400,
+      });
       onClose();
     }, [CLOSE, translateY, onClose]);
 
@@ -123,40 +130,41 @@ const DepBottomSheet = forwardRef<DepBottomSheetMethods, Props>(
               styles.container,
               {
                 width: width,
-                bottom: insets.bottom,
+                height: SHEET_HEIGHT,
+                bottom: 0,
               },
               animationStyle,
               backgroundColorAnimation,
             ]}
-            onLayout={({ nativeEvent }) => {
-              const { height } = nativeEvent.layout;
-              if (height) {
-                setDepBottomSheetHeight(height);
-                translateY.value = withTiming(height + insets.bottom);
-              }
-            }}
           >
             <View style={[styles.line, lineColorAnimation]} />
-            <SearchBar
-              placeholder="Search departure locations..."
-              value={searchQuery}
-              onChangeText={setSearchQuery}
-            />
-            <View style={styles.locationList}>
-              {filteredLocations.map((location) => (
-                <Pressable
-                  key={location.id}
-                  style={styles.locationItem}
-                  onPress={() => {
-                    onCitySelect(location.city);
-                    close();
-                  }}
-                >
-                  <Text style={textColorAnimation}>
-                    {location.city}, {location.region}, {location.country}
-                  </Text>
-                </Pressable>
-              ))}
+            <View style={styles.content}>
+              <SearchBar
+                placeholder="Search departure locations..."
+                value={searchQuery}
+                onChangeText={setSearchQuery}
+              />
+              <ScrollView
+                style={styles.scrollView}
+                contentContainerStyle={styles.scrollContent}
+                showsVerticalScrollIndicator={false}
+                bounces={false}
+              >
+                {filteredLocations.map((location) => (
+                  <Pressable
+                    key={location.id}
+                    style={styles.locationItem}
+                    onPress={() => {
+                      onCitySelect(location.city);
+                      close();
+                    }}
+                  >
+                    <Text style={[styles.locationText, textColorAnimation]}>
+                      {location.city}, {location.region}, {location.country}
+                    </Text>
+                  </Pressable>
+                ))}
+              </ScrollView>
             </View>
           </Animated.View>
         </GestureDetector>
@@ -166,53 +174,42 @@ const DepBottomSheet = forwardRef<DepBottomSheetMethods, Props>(
 );
 
 export default DepBottomSheet;
+
 const styles = StyleSheet.create({
   container: {
     position: "absolute",
-    bottom: 0,
     left: 0,
     right: 0,
-    paddingVertical: 40,
-    paddingHorizontal: 20,
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
-    justifyContent: "center",
-    alignItems: "center",
-    paddingBottom: 90,
+    paddingTop: 20,
     zIndex: 1,
   },
+  content: {
+    flex: 1,
+    paddingHorizontal: 20,
+  },
   line: {
-    position: "absolute",
-    top: 8,
+    alignSelf: "center",
     width: 40,
     height: 4,
     borderRadius: 8,
+    marginBottom: 20,
   },
-  textTitle: {
-    fontSize: 22,
-    fontWeight: "bold",
-    marginTop: 40,
-    marginBottom: 14,
-  },
-  text: {
-    fontSize: 16,
-    fontWeight: "500",
-  },
-  locationList: {
+  scrollView: {
+    flex: 1,
     marginTop: 20,
-    padding: 10,
+  },
+  scrollContent: {
+    paddingBottom: 20,
   },
   locationItem: {
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(150, 150, 150, 0.2)",
+  },
+  locationText: {
     fontSize: 16,
     fontWeight: "500",
-    marginBottom: 5,
-  },
-  searchBar: {
-    width: "100%",
-    height: 40,
-    borderColor: "gray",
-    borderWidth: 1,
-    marginBottom: 10,
-    padding: 10,
   },
 });

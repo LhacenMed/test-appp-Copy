@@ -1,4 +1,4 @@
-import React, { useMemo, useRef } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -7,15 +7,58 @@ import {
   TouchableOpacity,
   StatusBar,
   Button,
+  Animated,
 } from "react-native";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import LocationInputs from "../components/LocationInputs";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import BottomSheet, { BottomSheetMethods } from "../components/BottomSheet";
+import DepBottomSheet, {
+  DepBottomSheetMethods,
+} from "../components/DepBottomSheet";
 
 export default function Page() {
   const insets = useSafeAreaInsets();
-  const bottomSheetRef = useRef<BottomSheetMethods | null>(null);
+  const [activeInput, setActiveInput] = React.useState<
+    "departure" | "destination"
+  >("departure");
+  const [bottomSheetVisible, setBottomSheetVisible] = useState(false);
+  const tabBarAnimation = useRef(new Animated.Value(0)).current;
+  const depBottomSheetRef = useRef<DepBottomSheetMethods>(null);
+
+  const onCitySelect = (city: string) => {
+    if (activeInput === "departure") {
+      // Update departure city logic here
+      console.log(`Selected departure city: ${city}`);
+    } else if (activeInput === "destination") {
+      // Update destination city logic here
+      console.log(`Selected destination city: ${city}`);
+    } else {
+      console.log("Invalid input");
+    }
+  };
+
+  const handleBottomSheetExpand = () => {
+    setBottomSheetVisible(true);
+    Animated.timing(tabBarAnimation, {
+      toValue: 1,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const handleBottomSheetClose = () => {
+    setBottomSheetVisible(false);
+    Animated.timing(tabBarAnimation, {
+      toValue: 0,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const handleDeparturePress = () => {
+    setActiveInput("departure");
+    depBottomSheetRef.current?.expand();
+  };
 
   return (
     <SafeAreaView style={[styles.container, { paddingTop: insets.top }]}>
@@ -76,7 +119,7 @@ export default function Page() {
       </View>
 
       {/* Location Inputs */}
-      <LocationInputs bottomSheetRef={bottomSheetRef} />
+      <LocationInputs onDeparturePress={handleDeparturePress} />
 
       {/* Date Selection */}
       <TouchableOpacity style={styles.dateContainer}>
@@ -117,12 +160,26 @@ export default function Page() {
         <Text style={styles.searchButtonText}>Search</Text>
       </TouchableOpacity>
 
-      <BottomSheet
-        ref={bottomSheetRef}
-        setTheme={() => {}}
-        theme={null}
-        setThemeSwitch={() => {}}
-        themeSwitch=""
+      <Animated.View
+        style={{
+          transform: [
+            {
+              translateY: tabBarAnimation.interpolate({
+                inputRange: [0, 1],
+                outputRange: [0, 100],
+              }),
+            },
+          ],
+        }}
+      >
+        {/* Tab Bar Component */}
+      </Animated.View>
+
+      <DepBottomSheet
+        ref={depBottomSheetRef}
+        onCitySelect={onCitySelect}
+        onExpand={handleBottomSheetExpand}
+        onClose={handleBottomSheetClose}
       />
     </SafeAreaView>
   );

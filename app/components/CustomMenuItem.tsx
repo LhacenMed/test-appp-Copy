@@ -4,7 +4,7 @@ import {
   TouchableWithoutFeedback,
 } from "react-native";
 import React from "react";
-import { BottomSheetMethods } from "./BottomSheet";
+import { BottomSheetMethods } from "./DesBottomSheet";
 import Animated, {
   useAnimatedStyle,
   withTiming,

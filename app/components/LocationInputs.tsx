@@ -8,17 +8,30 @@ import {
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import CustomText from "./CustomText";
-import { BottomSheetMethods } from "./BottomSheet";
+import NetInfo from "@react-native-community/netinfo";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-interface LocationInputsProps {
-  bottomSheetRef: React.RefObject<BottomSheetMethods>;
-}
+type LocationInputsProps = {
+  onDeparturePress: () => void;
+};
 
-const LocationInputs: React.FC<LocationInputsProps> = ({ bottomSheetRef }) => {
+const LocationInputs = ({ onDeparturePress }: LocationInputsProps) => {
   const animatedBgFrom = useRef(new Animated.Value(0)).current;
   const animatedBgTo = useRef(new Animated.Value(0)).current;
-  const [cityName, setCityName] = useState<string | null>(null);
+  const [departureCityName, setDepartureCityName] = useState<string | null>(
+    null
+  );
+  const [destinationCityName, setDestinationCityName] = useState<string | null>(
+    null
+  );
   const [loading, setLoading] = useState<boolean>(false);
+
+  const [theme, setTheme] = useState<string | null | undefined>("light");
+  const [themeSwitch, setThemeSwitch] = useState<string>("light");
+
+  const [activeInput, setActiveInput] = useState<"departure" | "destination">(
+    "departure"
+  );
 
   const interpolatedBgFrom = animatedBgFrom.interpolate({
     inputRange: [0, 1],
@@ -54,13 +67,6 @@ const LocationInputs: React.FC<LocationInputsProps> = ({ bottomSheetRef }) => {
     }).start();
   };
 
-  const showModal = () => {
-    if (bottomSheetRef.current) {
-      bottomSheetRef.current.expand();
-    }
-    console.log("Show modal called");
-  };
-
   const getUserApiAddress = async () => {
     const response = await fetch("https://ipinfo.io/json");
     if (!response.ok) {
@@ -75,21 +81,50 @@ const LocationInputs: React.FC<LocationInputsProps> = ({ bottomSheetRef }) => {
     };
   };
 
+  const handleSwitchCities = () => {
+    setDepartureCityName((prev) => {
+      setDestinationCityName(prev);
+      return destinationCityName;
+    });
+  };
+
   useEffect(() => {
     const fetchUserApiAddress = async () => {
       setLoading(true);
       try {
-        const userApiAddress = await getUserApiAddress();
-        console.log("User API Address:", userApiAddress.ip);
-        console.log(
-          "User Location:",
-          userApiAddress.city,
-          userApiAddress.region,
-          userApiAddress.country
+        const storedDepartureCityName = await AsyncStorage.getItem(
+          "departureCityName"
         );
-        setCityName(userApiAddress.city);
+        const storedDestinationCityName = await AsyncStorage.getItem(
+          "destinationCityName"
+        );
+
+        if (storedDepartureCityName) {
+          setDepartureCityName(storedDepartureCityName);
+        } else {
+          const state = await NetInfo.fetch();
+          if (!state.isConnected) {
+            console.log("No internet connection");
+            setLoading(false);
+            return;
+          }
+          const userApiAddress = await getUserApiAddress();
+          console.log("User API Address:", userApiAddress.ip);
+          console.log(
+            "User Location:",
+            userApiAddress.city,
+            userApiAddress.region,
+            userApiAddress.country
+          );
+          setDepartureCityName(userApiAddress.city);
+          await AsyncStorage.setItem("departureCityName", userApiAddress.city);
+        }
+
+        if (storedDestinationCityName) {
+          setDestinationCityName(storedDestinationCityName);
+        }
       } catch (error) {
-        console.error("Error fetching user API address:", error);
+        console.error("Error fetching city names from storage:", error);
       } finally {
         setLoading(false);
       }
@@ -97,6 +132,19 @@ const LocationInputs: React.FC<LocationInputsProps> = ({ bottomSheetRef }) => {
 
     fetchUserApiAddress();
   }, []);
+
+  useEffect(() => {
+    const storeCityNames = async () => {
+      if (departureCityName) {
+        await AsyncStorage.setItem("departureCityName", departureCityName);
+      }
+      if (destinationCityName) {
+        await AsyncStorage.setItem("destinationCityName", destinationCityName);
+      }
+    };
+
+    storeCityNames();
+  }, [departureCityName, destinationCityName]);
 
   return (
     <View style={styles.locationContainer}>
@@ -109,13 +157,15 @@ const LocationInputs: React.FC<LocationInputsProps> = ({ bottomSheetRef }) => {
         <Pressable
           onPressIn={handlePressInFrom}
           onPressOut={handlePressOutFrom}
-          onPress={showModal}
+          onPress={() => onDeparturePress()}
           style={styles.pressable}
         >
           <CustomText
-            style={cityName ? styles.inputLabelWhite : styles.inputLabelGrey}
+            style={
+              departureCityName ? styles.inputLabelWhite : styles.inputLabelGrey
+            }
           >
-            {cityName || "From?"}
+            {departureCityName || "From?"}
             {loading && (
               <ActivityIndicator
                 size="small"
@@ -141,10 +191,18 @@ const LocationInputs: React.FC<LocationInputsProps> = ({ bottomSheetRef }) => {
         <Pressable
           onPressIn={handlePressInTo}
           onPressOut={handlePressOutTo}
-          onPress={showModal}
+          onPress={() => {}}
           style={styles.pressable}
         >
-          <CustomText style={styles.inputLabel}>To?</CustomText>
+          <CustomText
+            style={
+              destinationCityName
+                ? styles.inputLabelWhite
+                : styles.inputLabelGrey
+            }
+          >
+            {destinationCityName || "To?"}
+          </CustomText>
         </Pressable>
       </Animated.View>
       <Pressable
@@ -152,6 +210,7 @@ const LocationInputs: React.FC<LocationInputsProps> = ({ bottomSheetRef }) => {
           styles.swapButton,
           pressed && styles.swapButtonPressed,
         ]}
+        onPress={handleSwitchCities}
       >
         <MaterialIcons name="swap-vert" size={24} color="#fff" />
       </Pressable>

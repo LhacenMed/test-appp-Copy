@@ -22,7 +22,7 @@ import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import BackDrop from "./BackDrop";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ThemeContext } from "../../context/ThemeContext";
-import locations from "./locationsData";
+import locations from "../constants/locationsData";
 import SearchBar from "./SearchBar";
 
 type Props = {

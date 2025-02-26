@@ -12,12 +12,14 @@ import { FIREBASE_AUTH } from "../../FirebaseConfig";
 import { NavigationProp } from "@react-navigation/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Animated from "react-native-reanimated";
+import { useTabBar } from "../../context/TabBarContext";
 
 interface RouterProps {
   navigation: NavigationProp<any, any>;
 }
 
 const Page = ({ navigation }: RouterProps) => {
+  const { isTabBarVisible, toggleTabBar } = useTabBar();
   const navigateToSplash = () => {
     navigation.navigate("Splash");
   };
@@ -72,6 +74,19 @@ const Page = ({ navigation }: RouterProps) => {
           onPress={navigateToSettingsScreenTest}
           title="Open Settings screen (test)"
         />
+        <TouchableOpacity
+          onPress={toggleTabBar}
+          style={{
+            backgroundColor: "#007AFF",
+            borderRadius: 6,
+            marginTop: 20,
+            padding: 10,
+          }}
+        >
+          <Text style={{ color: "#fff" }}>
+            {isTabBarVisible ? "Hide TabBar" : "Show TabBar"}
+          </Text>
+        </TouchableOpacity>
         <TouchableOpacity
           onPress={clearOnboarding}
           style={{

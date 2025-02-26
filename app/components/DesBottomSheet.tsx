@@ -30,6 +30,8 @@ type Props = {
   onCitySelect: (city: string) => void;
   onExpand: () => void;
   onClose: () => void;
+  toggleTabBar: () => void;
+  isTabBarVisible: boolean;
 };
 
 export interface DesBottomSheetMethods {
@@ -38,7 +40,7 @@ export interface DesBottomSheetMethods {
 }
 
 const DesBottomSheet = forwardRef<DesBottomSheetMethods, Props>(
-  ({ onCitySelect, onExpand, onClose }, ref) => {
+  ({ onCitySelect, onExpand, onClose, toggleTabBar, isTabBarVisible }, ref) => {
     const insets = useSafeAreaInsets();
     const { width } = useWindowDimensions();
     const SHEET_HEIGHT = 700;
@@ -62,7 +64,10 @@ const DesBottomSheet = forwardRef<DesBottomSheetMethods, Props>(
         stiffness: 400,
       });
       onClose();
-    }, [CLOSE, translateY, onClose]);
+      if (!isTabBarVisible) {
+        toggleTabBar();
+      }
+    }, [CLOSE, translateY, onClose, toggleTabBar, isTabBarVisible]);
 
     useImperativeHandle(ref, () => ({ expand, close }), [expand, close]);
 

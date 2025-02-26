@@ -17,8 +17,10 @@ import DepBottomSheet, {
 import DesBottomSheet, {
   DesBottomSheetMethods,
 } from "../components/DesBottomSheet";
+import { useTabBar } from "context/TabBarContext";
 
 export default function Page() {
+  const { isTabBarVisible, toggleTabBar } = useTabBar();
   const insets = useSafeAreaInsets();
   const [activeInput, setActiveInput] = React.useState<
     "departure" | "destination"
@@ -138,6 +140,8 @@ export default function Page() {
         selectedDepartureCity={selectedDepartureCity}
         onDestinationPress={handleDestinationPress}
         selectedDestinationCity={selectedDestinationCity}
+        toggleTabBar={toggleTabBar}
+        isTabBarVisible={isTabBarVisible}
       />
 
       {/* Date Selection */}
@@ -179,26 +183,27 @@ export default function Page() {
         <Text style={styles.searchButtonText}>Search</Text>
       </TouchableOpacity>
 
-      <Animated.View
+      <TouchableOpacity
+        onPress={toggleTabBar}
         style={{
-          transform: [
-            {
-              translateY: tabBarAnimation.interpolate({
-                inputRange: [0, 1],
-                outputRange: [0, 100],
-              }),
-            },
-          ],
+          backgroundColor: "#007AFF",
+          borderRadius: 6,
+          marginTop: 20,
+          padding: 10,
         }}
       >
-        {/* Tab Bar Component */}
-      </Animated.View>
+        <Text style={{ color: "#fff" }}>
+          {isTabBarVisible ? "Hide TabBar" : "Show TabBar"}
+        </Text>
+      </TouchableOpacity>
 
       <DepBottomSheet
         ref={depBottomSheetRef}
         onCitySelect={onCitySelect}
         onExpand={handleBottomSheetExpand}
         onClose={handleBottomSheetClose}
+        toggleTabBar={toggleTabBar}
+        isTabBarVisible={isTabBarVisible}
       />
 
       <DesBottomSheet
@@ -206,6 +211,8 @@ export default function Page() {
         onCitySelect={onCitySelect}
         onExpand={handleBottomSheetExpand}
         onClose={handleBottomSheetClose}
+        toggleTabBar={toggleTabBar}
+        isTabBarVisible={isTabBarVisible}
       />
     </SafeAreaView>
   );

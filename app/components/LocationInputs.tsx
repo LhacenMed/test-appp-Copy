@@ -16,6 +16,8 @@ type LocationInputsProps = {
   selectedDepartureCity: string | null;
   onDestinationPress: () => void;
   selectedDestinationCity: string | null;
+  toggleTabBar: () => void;
+  isTabBarVisible: boolean;
 };
 
 const LocationInputs = ({
@@ -23,6 +25,8 @@ const LocationInputs = ({
   selectedDepartureCity,
   onDestinationPress,
   selectedDestinationCity,
+  toggleTabBar,
+  isTabBarVisible,
 }: LocationInputsProps) => {
   const animatedBgFrom = useRef(new Animated.Value(0)).current;
   const animatedBgTo = useRef(new Animated.Value(0)).current;
@@ -164,6 +168,20 @@ const LocationInputs = ({
     storeCityNames();
   }, [departureCityName, destinationCityName]);
 
+  const handleDepartureInputPress = () => {
+    onDeparturePress();
+    if (isTabBarVisible) {
+      toggleTabBar();
+    }
+  };
+
+  const handleDestinationInputPress = () => {
+    onDestinationPress();
+    if (isTabBarVisible) {
+      toggleTabBar();
+    }
+  };
+
   return (
     <View style={styles.locationContainer}>
       <Animated.View
@@ -175,7 +193,7 @@ const LocationInputs = ({
         <Pressable
           onPressIn={handlePressInFrom}
           onPressOut={handlePressOutFrom}
-          onPress={() => onDeparturePress()}
+          onPress={handleDepartureInputPress}
           style={styles.pressable}
         >
           <CustomText
@@ -209,7 +227,7 @@ const LocationInputs = ({
         <Pressable
           onPressIn={handlePressInTo}
           onPressOut={handlePressOutTo}
-          onPress={() => onDestinationPress()}
+          onPress={handleDestinationInputPress}
           style={styles.pressable}
         >
           <CustomText

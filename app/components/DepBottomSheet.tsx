@@ -30,6 +30,8 @@ type Props = {
   onCitySelect: (city: string) => void;
   onExpand: () => void;
   onClose: () => void;
+  toggleTabBar: () => void;
+  isTabBarVisible: boolean;
 };
 
 export interface DepBottomSheetMethods {
@@ -38,7 +40,7 @@ export interface DepBottomSheetMethods {
 }
 
 const DepBottomSheet = forwardRef<DepBottomSheetMethods, Props>(
-  ({ onCitySelect, onExpand, onClose }, ref) => {
+  ({ onCitySelect, onExpand, onClose, toggleTabBar, isTabBarVisible }, ref) => {
     const insets = useSafeAreaInsets();
     const { width } = useWindowDimensions();
     const SHEET_HEIGHT = 700;
@@ -62,7 +64,10 @@ const DepBottomSheet = forwardRef<DepBottomSheetMethods, Props>(
         stiffness: 400,
       });
       onClose();
-    }, [CLOSE, translateY, onClose]);
+      if (!isTabBarVisible) {
+        toggleTabBar();
+      }
+    }, [CLOSE, translateY, onClose, toggleTabBar, isTabBarVisible]);
 
     useImperativeHandle(ref, () => ({ expand, close }), [expand, close]);
 
@@ -144,27 +149,28 @@ const DepBottomSheet = forwardRef<DepBottomSheetMethods, Props>(
                 value={searchQuery}
                 onChangeText={setSearchQuery}
               />
-              <ScrollView
-                style={styles.scrollView}
-                contentContainerStyle={styles.scrollContent}
-                showsVerticalScrollIndicator={false}
-                bounces={false}
-              >
-                {filteredLocations.map((location) => (
-                  <Pressable
-                    key={location.id}
-                    style={styles.locationItem}
-                    onPress={() => {
-                      onCitySelect(location.city);
-                      close();
-                    }}
-                  >
-                    <Text style={[styles.locationText, textColorAnimation]}>
-                      {location.city}, {location.region}, {location.country}
-                    </Text>
-                  </Pressable>
-                ))}
-              </ScrollView>
+              <View style={styles.scrollContainer}>
+                <ScrollView
+                  style={styles.scrollView}
+                  showsVerticalScrollIndicator={false}
+                  bounces={false}
+                >
+                  {filteredLocations.map((location) => (
+                    <Pressable
+                      key={location.id}
+                      style={styles.locationItem}
+                      onPress={() => {
+                        onCitySelect(location.city);
+                        close();
+                      }}
+                    >
+                      <Text style={[styles.locationText, textColorAnimation]}>
+                        {location.city}, {location.region}, {location.country}
+                      </Text>
+                    </Pressable>
+                  ))}
+                </ScrollView>
+              </View>
             </View>
           </Animated.View>
         </GestureDetector>
@@ -174,7 +180,6 @@ const DepBottomSheet = forwardRef<DepBottomSheetMethods, Props>(
 );
 
 export default DepBottomSheet;
-
 const styles = StyleSheet.create({
   container: {
     position: "absolute",
@@ -196,11 +201,14 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginBottom: 20,
   },
-  scrollView: {
+  scrollContainer: {
     flex: 1,
     marginTop: 20,
   },
-  scrollContent: {
+  scrollView: {
+    flex: 1,
+  },
+  locationList: {
     paddingBottom: 20,
   },
   locationItem: {

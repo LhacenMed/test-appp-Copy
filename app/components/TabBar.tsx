@@ -4,15 +4,17 @@ import {
   BottomTabNavigationOptions,
 } from "@react-navigation/bottom-tabs";
 import TabBarButton from "./TabBarButton";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import Animated, {
   ReduceMotion,
   useAnimatedStyle,
   useSharedValue,
   withSpring,
+  withTiming,
 } from "react-native-reanimated";
 import { BlurView } from "expo-blur";
 import { ThemeContext } from "../../context/ThemeContext";
+import { useTabBar } from "../../context/TabBarContext";
 
 interface CustomTabNavigationOptions extends BottomTabNavigationOptions {
   blurEnabled?: boolean;
@@ -24,11 +26,19 @@ export default function TabBar({
   navigation,
 }: BottomTabBarProps) {
   const { theme } = useContext(ThemeContext);
+  const { isTabBarVisible } = useTabBar();
+  const translateY = useSharedValue(0);
+
+  useEffect(() => {
+    translateY.value = withTiming(isTabBarVisible ? 0 : 100, {
+      duration: 200,
+    });
+  }, [isTabBarVisible]);
+
   const backgroundColor = theme === "dark" ? "#121212" : "#fff";
   const borderTopColor = theme === "dark" ? "#1E1E1E" : "#eee";
 
   const [dimensions, setDimensions] = useState({ height: 20, width: 100 });
-
   const buttonWidth = dimensions.width / state.routes.length;
 
   const onTabbarLayout = (e: LayoutChangeEvent) => {
@@ -43,6 +53,12 @@ export default function TabBar({
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ translateX: tabPositionX.value }],
   }));
+
+  const slideAnimation = useAnimatedStyle(() => {
+    return {
+      transform: [{ translateY: translateY.value }],
+    };
+  });
 
   const blurEnabled =
     Platform.OS === "ios" &&
@@ -123,18 +139,30 @@ export default function TabBar({
     </View>
   );
 
+  const AnimatedBlurView = Animated.createAnimatedComponent(BlurView);
+
   return blurEnabled ? (
-    <BlurView
+    <AnimatedBlurView
       intensity={50}
       tint="light"
-      style={[styles.blurView, { borderTopColor: borderTopColor }]}
+      style={[
+        styles.blurView,
+        { borderTopColor: borderTopColor },
+        slideAnimation,
+      ]}
     >
       {TabBarContent}
-    </BlurView>
+    </AnimatedBlurView>
   ) : (
-    <View style={[styles.blurView, { borderTopColor: borderTopColor }]}>
+    <Animated.View
+      style={[
+        styles.blurView,
+        { borderTopColor: borderTopColor },
+        slideAnimation,
+      ]}
+    >
       {TabBarContent}
-    </View>
+    </Animated.View>
   );
 }
 

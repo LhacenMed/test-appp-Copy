@@ -6,7 +6,6 @@ import {
   SafeAreaView,
   TouchableOpacity,
   StatusBar,
-  Button,
   Animated,
 } from "react-native";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
@@ -15,6 +14,9 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import DepBottomSheet, {
   DepBottomSheetMethods,
 } from "../components/DepBottomSheet";
+import DesBottomSheet, {
+  DesBottomSheetMethods,
+} from "../components/DesBottomSheet";
 
 export default function Page() {
   const insets = useSafeAreaInsets();
@@ -24,13 +26,20 @@ export default function Page() {
   const [bottomSheetVisible, setBottomSheetVisible] = useState(false);
   const tabBarAnimation = useRef(new Animated.Value(0)).current;
   const depBottomSheetRef = useRef<DepBottomSheetMethods>(null);
+  const desBottomSheetRef = useRef<DesBottomSheetMethods>(null);
+  const [selectedDepartureCity, setSelectedDepartureCity] = useState<
+    string | null
+  >(null);
+  const [selectedDestinationCity, setSelectedDestinationCity] = useState<
+    string | null
+  >(null);
 
   const onCitySelect = (city: string) => {
     if (activeInput === "departure") {
-      // Update departure city logic here
+      setSelectedDepartureCity(city);
       console.log(`Selected departure city: ${city}`);
     } else if (activeInput === "destination") {
-      // Update destination city logic here
+      setSelectedDestinationCity(city);
       console.log(`Selected destination city: ${city}`);
     } else {
       console.log("Invalid input");
@@ -58,6 +67,11 @@ export default function Page() {
   const handleDeparturePress = () => {
     setActiveInput("departure");
     depBottomSheetRef.current?.expand();
+  };
+
+  const handleDestinationPress = () => {
+    setActiveInput("destination");
+    desBottomSheetRef.current?.expand();
   };
 
   return (
@@ -119,7 +133,12 @@ export default function Page() {
       </View>
 
       {/* Location Inputs */}
-      <LocationInputs onDeparturePress={handleDeparturePress} />
+      <LocationInputs
+        onDeparturePress={handleDeparturePress}
+        selectedDepartureCity={selectedDepartureCity}
+        onDestinationPress={handleDestinationPress}
+        selectedDestinationCity={selectedDestinationCity}
+      />
 
       {/* Date Selection */}
       <TouchableOpacity style={styles.dateContainer}>
@@ -177,6 +196,13 @@ export default function Page() {
 
       <DepBottomSheet
         ref={depBottomSheetRef}
+        onCitySelect={onCitySelect}
+        onExpand={handleBottomSheetExpand}
+        onClose={handleBottomSheetClose}
+      />
+
+      <DesBottomSheet
+        ref={desBottomSheetRef}
         onCitySelect={onCitySelect}
         onExpand={handleBottomSheetExpand}
         onClose={handleBottomSheetClose}

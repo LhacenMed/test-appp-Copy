@@ -13,16 +13,24 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type LocationInputsProps = {
   onDeparturePress: () => void;
+  selectedDepartureCity: string | null;
+  onDestinationPress: () => void;
+  selectedDestinationCity: string | null;
 };
 
-const LocationInputs = ({ onDeparturePress }: LocationInputsProps) => {
+const LocationInputs = ({
+  onDeparturePress,
+  selectedDepartureCity,
+  onDestinationPress,
+  selectedDestinationCity,
+}: LocationInputsProps) => {
   const animatedBgFrom = useRef(new Animated.Value(0)).current;
   const animatedBgTo = useRef(new Animated.Value(0)).current;
   const [departureCityName, setDepartureCityName] = useState<string | null>(
-    null
+    selectedDepartureCity
   );
   const [destinationCityName, setDestinationCityName] = useState<string | null>(
-    null
+    selectedDestinationCity
   );
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -89,6 +97,14 @@ const LocationInputs = ({ onDeparturePress }: LocationInputsProps) => {
   };
 
   useEffect(() => {
+    setDepartureCityName(selectedDepartureCity);
+  }, [selectedDepartureCity]);
+
+  useEffect(() => {
+    setDestinationCityName(selectedDestinationCity);
+  }, [selectedDestinationCity]);
+
+  useEffect(() => {
     const fetchUserApiAddress = async () => {
       setLoading(true);
       try {
@@ -99,9 +115,11 @@ const LocationInputs = ({ onDeparturePress }: LocationInputsProps) => {
           "destinationCityName"
         );
 
-        if (storedDepartureCityName) {
+        if (storedDepartureCityName && !selectedDepartureCity) {
           setDepartureCityName(storedDepartureCityName);
-        } else {
+        }
+
+        if (!storedDepartureCityName && !selectedDepartureCity) {
           const state = await NetInfo.fetch();
           if (!state.isConnected) {
             console.log("No internet connection");
@@ -131,7 +149,7 @@ const LocationInputs = ({ onDeparturePress }: LocationInputsProps) => {
     };
 
     fetchUserApiAddress();
-  }, []);
+  }, [selectedDepartureCity]);
 
   useEffect(() => {
     const storeCityNames = async () => {
@@ -191,7 +209,7 @@ const LocationInputs = ({ onDeparturePress }: LocationInputsProps) => {
         <Pressable
           onPressIn={handlePressInTo}
           onPressOut={handlePressOutTo}
-          onPress={() => {}}
+          onPress={() => onDestinationPress()}
           style={styles.pressable}
         >
           <CustomText

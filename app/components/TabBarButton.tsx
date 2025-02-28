@@ -31,6 +31,7 @@ const TabBarButton: React.FC<TabBarButtonProps> = ({
   const scale = useSharedValue(0);
   const circleOpacity = useSharedValue(0);
   const borderOpacity = useSharedValue(0);
+  const [isLongPressed, setIsLongPressed] = useState(false);
   const { theme } = useContext(ThemeContext);
   const buttonTextColor = theme === "dark" ? "#fff" : "#000";
   const circleBackgroundColor =
@@ -44,13 +45,22 @@ const TabBarButton: React.FC<TabBarButtonProps> = ({
   }, [scale, isFocused]);
 
   const handlePressIn = () => {
-    circleOpacity.value = withTiming(1, { duration: 0 }); // Fade in circle
-    borderOpacity.value = 0; // Hide border on press
+    // Remove circle animation from regular press
   };
 
   const handlePressOut = () => {
-    circleOpacity.value = withTiming(0, { duration: 300 }); // Fade out circle
-    borderOpacity.value = withTiming(1, { duration: 300 }); // Fade in the border
+    if (isLongPressed) {
+      circleOpacity.value = withTiming(0, { duration: 300 }); // Fade out circle
+      borderOpacity.value = withTiming(1, { duration: 300 }); // Fade in the border
+      setIsLongPressed(false);
+    }
+  };
+
+  const handleLongPress = () => {
+    setIsLongPressed(true);
+    circleOpacity.value = withTiming(1, { duration: 0 }); // Fade in circle
+    borderOpacity.value = 0; // Hide border on long press
+    onLongPress();
   };
 
   const animatedIconStyle = useAnimatedStyle(() => {
@@ -78,17 +88,18 @@ const TabBarButton: React.FC<TabBarButtonProps> = ({
   const animatedCircleStyle = useAnimatedStyle(() => {
     return {
       opacity: circleOpacity.value,
-      // transform: [{ scale: circleScale.value }],
       borderWidth: 1,
-      borderColor: `rgba(0, 0, 0, ${borderOpacity.value})`,
+      borderColor:
+        theme === "dark"
+          ? `rgba(255, 255, 255, ${borderOpacity.value})`
+          : `rgba(0, 0, 0, ${borderOpacity.value})`,
     };
   });
 
   return (
     <Pressable
       onPress={onPress}
-      onLongPress={onLongPress}
-      onPressIn={handlePressIn}
+      onLongPress={handleLongPress}
       onPressOut={handlePressOut}
       style={styles.tabbarItem}
     >

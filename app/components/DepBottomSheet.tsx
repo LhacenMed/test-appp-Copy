@@ -18,6 +18,7 @@ import Animated, {
   useSharedValue,
   withSpring,
   withTiming,
+  runOnJS,
 } from "react-native-reanimated";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import BackDrop from "./BackDrop";
@@ -103,12 +104,18 @@ const DepBottomSheet = forwardRef<DepBottomSheetMethods, Props>(
           });
         }
       })
-      .onEnd(() => {
-        if (translateY.value > 50) {
+      .onEnd((event) => {
+        "worklet";
+        const shouldClose = event.translationY > 10;
+        if (shouldClose) {
           translateY.value = withSpring(CLOSE, {
             damping: 100,
             stiffness: 400,
           });
+          runOnJS(onClose)();
+          if (!isTabBarVisible) {
+            runOnJS(toggleTabBar)();
+          }
         } else {
           translateY.value = withSpring(OPEN, {
             damping: 100,
@@ -152,8 +159,8 @@ const DepBottomSheet = forwardRef<DepBottomSheetMethods, Props>(
               <View style={styles.scrollContainer}>
                 <ScrollView
                   style={styles.scrollView}
-                  showsVerticalScrollIndicator={false}
-                  bounces={false}
+                  // showsVerticalScrollIndicator={false}
+                  // bounces={false}
                 >
                   {filteredLocations.map((location) => (
                     <Pressable

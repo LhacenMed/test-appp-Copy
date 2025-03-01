@@ -23,6 +23,7 @@ import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { RootStackParamList } from "../types";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { createUser } from "lib/appwrite";
 
 const SignupScreen = () => {
   const [email, setEmail] = useState("");
@@ -33,21 +34,22 @@ const SignupScreen = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   const signUp = async () => {
-    setLoading(true);
-    try {
-      const response = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-      console.log(response);
-      alert("Check your emails!");
-    } catch (error: any) {
-      console.log(error);
-      alert("Registration failed, " + error.message);
-    } finally {
-      setLoading(false);
-    }
+    // setLoading(true);
+    // try {
+    //   const response = await createUserWithEmailAndPassword(
+    //     auth,
+    //     email,
+    //     password
+    //   );
+    //   console.log(response);
+    //   alert("Check your emails!");
+    // } catch (error: any) {
+    //   console.log(error);
+    //   alert("Registration failed, " + error.message);
+    // } finally {
+    //   setLoading(false);
+    // }
+    createUser();
   };
 
   const [secureEntry, setSecureEntry] = useState(true);

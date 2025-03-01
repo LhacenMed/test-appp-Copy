@@ -9,14 +9,13 @@ const requireEnvVar = (name: string): string => {
 };
 
 export const config = {
-  endpoint: requireEnvVar("APPWRITE_ENDPOINT"),
-  platform: requireEnvVar("APPWRITE_PLATFORM"),
-  projectId: requireEnvVar("APPWRITE_PROJECT_ID"),
-  databaseId: requireEnvVar("APPWRITE_DATABASE_ID"),
-  userCollectionId: requireEnvVar("APPWRITE_USER_COLLECTION_ID"),
-  videoCollectionId: requireEnvVar("APPWRITE_VIDEO_COLLECTION_ID"),
-  storageId: requireEnvVar("APPWRITE_STORAGE_ID"),
-  apiKey: requireEnvVar("APPWRITE_API_KEY"),
+  endpoint: "https://cloud.appwrite.io/v1",
+  platform: "com.lhacenmed.Firebaseauthloginapp",
+  projectId: "67af9cc40021fae1cb7b",
+  databaseId: "67c32519003b8e5ffeba",
+  userCollectionId: "67c32549002137578766",
+  videoCollectionId: "67c325be00032fb7a8bb",
+  storageId: "67c3288b001ccc480675",
 };
 
 // Init your React Native SDK
@@ -29,8 +28,8 @@ client
 
 const account = new Account(client);
 
-export const createUser = async (email: string, password: string, name: string) => {
-  account.create(ID.unique(), email, password, name).then(
+export const createUser = async () => {
+  account.create(ID.unique(), "me@example.com", "password", "Jane Doe").then(
     function (response) {
       console.log(response);
     },

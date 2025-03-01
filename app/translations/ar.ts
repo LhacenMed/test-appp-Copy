@@ -1,0 +1,17 @@
+export const translations = {
+  settings: "الإعدادات",
+  profile: "الملف الشخصي",
+  email: "البريد الإلكتروني",
+  google: "جوجل",
+  about: "حول",
+  termsOfUse: "شروط الاستخدام",
+  privacyPolicy: "سياسة الخصوصية",
+  checkForUpdates: "التحقق من التحديثات",
+  app: "التطبيق",
+  colorScheme: "نظام الألوان",
+  appLanguage: "لغة التطبيق",
+  contactUs: "اتصل بنا",
+  logOut: "تسجيل الخروج",
+  deleteAccount: "حذف الحساب",
+  footerText: "AsfarGo 2025 - جميع الحقوق محفوظة.",
+};

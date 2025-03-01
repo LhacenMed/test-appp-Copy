@@ -45,6 +45,8 @@ export default function Page() {
       console.log(`Selected destination city: ${city}`);
     } else {
       console.log("Invalid input");
+      setSelectedDestinationCity(null);
+      setSelectedDepartureCity(null);
     }
   };
 

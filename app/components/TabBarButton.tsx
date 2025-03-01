@@ -118,6 +118,8 @@ const TabBarButton: React.FC<TabBarButtonProps> = ({
         {icons[routeName]({
           isFocused,
           color: isFocused ? "rgb(0, 0, 0)" : "rgb(124, 124, 124)",
+          height: 22,
+          width: 22,
         })}
       </Animated.View>
 

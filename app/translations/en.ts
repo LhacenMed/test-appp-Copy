@@ -1,0 +1,17 @@
+export const translations = {
+  settings: "Settings",
+  profile: "Profile",
+  email: "Email",
+  google: "Google",
+  about: "About",
+  termsOfUse: "Terms of Use",
+  privacyPolicy: "Privacy Policy",
+  checkForUpdates: "Check for updates",
+  app: "App",
+  colorScheme: "Color Scheme",
+  appLanguage: "App Language",
+  contactUs: "Contact us",
+  logOut: "Log out",
+  deleteAccount: "Delete account",
+  footerText: "AsfarGo 2025 - All rights reserved.",
+};

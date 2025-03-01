@@ -4,12 +4,11 @@ import {
   BottomTabNavigationOptions,
 } from "@react-navigation/bottom-tabs";
 import TabBar from "../components/TabBar";
-import Index from "./index";
+import Index from "./Index";
 import Explore from "./Explore";
-import Profile from "./Bookings";
+import Profile from "./Profile";
 import Settings from "./Settings";
 import * as NavigationBar from "expo-navigation-bar";
-
 
 interface CustomTabNavigationOptions extends BottomTabNavigationOptions {
   blurEnabled?: boolean;

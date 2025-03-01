@@ -14,7 +14,7 @@ import WelcomeScreen from "./app/screens/WelcomeScreen";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Onboarding from "./app/screens/Onboarding";
 import { ActivityIndicator, View, StyleSheet } from "react-native";
-import TabLayout from "./app/screens/_layout";
+import TabLayout from "./app/tabs/_layout";
 import Splash from "./app/screens/Splash";
 import LoginScreenTest from "./app/screens/LoginScreen(test)";
 import { ThemeProvider } from "./context/ThemeContext";

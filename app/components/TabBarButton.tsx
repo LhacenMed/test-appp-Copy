@@ -11,19 +11,19 @@ import Animated, {
 import { useState, useContext } from "react";
 import { ThemeContext } from "../../context/ThemeContext";
 
-type IconKeys = "Home" | "Explore" | "Bookings" | "Settings";
-
-interface TabBarButtonProps {
+type TabBarButtonProps = {
   onPress: () => void;
   onLongPress: () => void;
+  onPressOut: () => void;
   isFocused: boolean;
-  routeName: IconKeys;
+  routeName: "Home" | "Explore" | "Bookings" | "Settings";
   label: string;
-}
+};
 
 const TabBarButton: React.FC<TabBarButtonProps> = ({
   onPress,
   onLongPress,
+  onPressOut,
   isFocused,
   routeName,
   label,
@@ -53,6 +53,7 @@ const TabBarButton: React.FC<TabBarButtonProps> = ({
       circleOpacity.value = withTiming(0, { duration: 300 }); // Fade out circle
       borderOpacity.value = withTiming(1, { duration: 300 }); // Fade in the border
       setIsLongPressed(false);
+      onPressOut();
     }
   };
 
@@ -147,10 +148,10 @@ const styles = StyleSheet.create({
   },
   circleBackground: {
     position: "absolute",
-    width: 90,
-    height: 90,
+    width: 80,
+    height: 80,
     borderRadius: 80,
-    backgroundColor: "rgba(0, 0, 0, 0.1)", // Adjust color and opacity as needed
-    zIndex: -1, // Ensures it appears behind the icon and label
+    backgroundColor: "rgba(0, 0, 0, 0.1)",
+    zIndex: -1,
   },
 });

@@ -20,24 +20,23 @@ import { translations as es } from "../translations/es";
 import { translations as de } from "../translations/de";
 import { translations as it } from "../translations/it";
 
-const [selectedLanguage, setSelectedLanguage] = useState<string>("English");
-
-const translationsMap: Record<string, typeof en> = {
-  English: en,
-  French: fr,
-  Arabic: ar,
-  Spanish: es,
-  German: de,
-  Italian: it,
-};
-
-const selectedTranslations = translationsMap[selectedLanguage];
-
 const Page = () => {
+  const [selectedLanguage, setSelectedLanguage] = useState<string>("English");
   const insets = useSafeAreaInsets();
   const [modalVisible, setModalVisible] = useState(false);
   const [languageModalVisible, setLanguageModalVisible] = useState(false);
   const themes = useContext(ThemeContext);
+
+  const translationsMap: Record<string, typeof en> = {
+    English: en,
+    French: fr,
+    Arabic: ar,
+    Spanish: es,
+    German: de,
+    Italian: it,
+  };
+
+  const selectedTranslations = translationsMap[selectedLanguage];
 
   const backgroundColor =
     themes.theme === "dark" ? "#171717" : "rgb(249, 249, 249)";

@@ -11,6 +11,7 @@
     },
     "esModuleInterop": true,
     "moduleResolution": "Node16",
-    "module": "Node16"
+    "module": "Node16",
+    "jsx": "react-native"
   }
 }

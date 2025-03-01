@@ -9,19 +9,19 @@ import {
 } from "react-native";
 
 import React, { useState } from "react";
-import { FIREBASE_AUTH } from "../../FirebaseConfig";
+import { FIREBASE_AUTH } from "../../../FirebaseConfig";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from "firebase/auth";
 
-import { colors } from "../utils/colors";
-import { fonts } from "../utils/fonts";
+import { colors } from "../../utils/colors";
+import { fonts } from "../../utils/fonts";
 
 import Ionicons from "react-native-vector-icons/Ionicons";
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
-import { RootStackParamList } from "../types";
+import { RootStackParamList } from "../../types";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const LoginScreen = () => {
@@ -129,7 +129,7 @@ const LoginScreen = () => {
 
         <TouchableOpacity style={styles.googleButtonContainer}>
           <Image
-            source={require("../../assets/google.png")}
+            source={require("../../../assets/google.png")}
             style={{ height: 20, width: 20 }}
           />
           <Text style={styles.googleText}>Google</Text>

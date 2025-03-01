@@ -9,36 +9,42 @@ import {
 } from "react-native";
 
 import React, { useState } from "react";
-import { FIREBASE_AUTH } from "../../FirebaseConfig";
+import { FIREBASE_AUTH } from "../../../FirebaseConfig";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from "firebase/auth";
 
-import { colors } from "../utils/colors";
-import { fonts } from "../utils/fonts";
+import { colors } from "../../utils/colors";
+import { fonts } from "../../utils/fonts";
 
 import Ionicons from "react-native-vector-icons/Ionicons";
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
-import { RootStackParamList } from "../types";
+import { RootStackParamList } from "../../types";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-const LoginScreen = () => {
+const SignupScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [userName, setUserName] = useState("");
   const [loading, setLoading] = useState(false);
   const auth = FIREBASE_AUTH;
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
-  const signIn = async () => {
+  const signUp = async () => {
     setLoading(true);
     try {
-      const response = await signInWithEmailAndPassword(auth, email, password);
+      const response = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
       console.log(response);
+      alert("Check your emails!");
     } catch (error: any) {
       console.log(error);
-      alert("Sign in failed, " + error.message);
+      alert("Registration failed, " + error.message);
     } finally {
       setLoading(false);
     }
@@ -48,9 +54,11 @@ const LoginScreen = () => {
 
   const handleGoBack = () => {
     navigation.goBack();
+    // navigation.navigate("Home");
   };
-  const handleSignup = () => {
-    navigation.navigate("SIGNUP");
+
+  const handleLogin = () => {
+    navigation.navigate("LOGIN");
   };
 
   const insets = useSafeAreaInsets();
@@ -65,22 +73,38 @@ const LoginScreen = () => {
         />
       </TouchableOpacity>
       <View style={styles.textContainer}>
-        <Text style={styles.headingText}>Hey,</Text>
-        <Text style={styles.headingText}>Welcome Back</Text>
+        <Text style={styles.headingText}>Let's get</Text>
+        <Text style={styles.headingText}>started</Text>
       </View>
 
       {/* form  */}
+
       <View style={styles.formContainer}>
         <View style={styles.inputContainer}>
           <Ionicons name={"mail-outline"} size={30} color={colors.secondary} />
           <TextInput
             value={email}
             style={styles.textInput}
-            placeholder="Enter your email"
+            placeholder="Enter your e-mail"
             autoCapitalize="none"
             placeholderTextColor={colors.secondary}
             keyboardType="email-address"
             onChangeText={(text) => setEmail(text)}
+          />
+        </View>
+
+        <View style={styles.inputContainer}>
+          <Ionicons
+            name={"person-circle-outline"}
+            size={30}
+            color={colors.secondary}
+          />
+          <TextInput
+            value={userName}
+            style={styles.textInput}
+            placeholder="Enter your full name"
+            placeholderTextColor={colors.secondary}
+            onChangeText={(text) => setUserName(text)}
           />
         </View>
 
@@ -93,7 +117,7 @@ const LoginScreen = () => {
             placeholderTextColor={colors.secondary}
             onChangeText={(text) => setPassword(text)}
             secureTextEntry={secureEntry}
-            keyboardType="number-pad"
+            keyboardType="number-pad" // Always set to number-pad
           />
           <TouchableOpacity
             onPress={() => {
@@ -108,19 +132,15 @@ const LoginScreen = () => {
           </TouchableOpacity>
         </View>
 
-        <TouchableOpacity onPress={() => navigation.navigate("ForgotPassword")}>
-          <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
-        </TouchableOpacity>
-
         {loading ? (
-          <ActivityIndicator size="large" color="#000" />
+          <ActivityIndicator size="large" color="#45484A" />
         ) : (
           <>
             <TouchableOpacity
               style={styles.loginButtonWrapper}
-              onPress={signIn}
+              onPress={signUp}
             >
-              <Text style={styles.loginText}>Login</Text>
+              <Text style={styles.loginText}>Sign up</Text>
             </TouchableOpacity>
           </>
         )}
@@ -129,17 +149,17 @@ const LoginScreen = () => {
 
         <TouchableOpacity style={styles.googleButtonContainer}>
           <Image
-            source={require("../../assets/google.png")}
-            style={{ height: 20, width: 20 }}
+            source={require("../../../assets/google.png")}
+            style={styles.googleImage}
           />
           <Text style={styles.googleText}>Google</Text>
         </TouchableOpacity>
 
         {/* footer */}
         <View style={styles.footerContainer}>
-          <Text style={styles.accountText}>Don't have an account?</Text>
-          <TouchableOpacity onPress={handleSignup}>
-            <Text style={styles.signupText}>Sign up</Text>
+          <Text style={styles.accountText}>Already have an account!</Text>
+          <TouchableOpacity onPress={handleLogin}>
+            <Text style={styles.signupText}>Login</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -147,7 +167,7 @@ const LoginScreen = () => {
   );
 };
 
-export default LoginScreen;
+export default SignupScreen;
 
 const styles = StyleSheet.create({
   container: {

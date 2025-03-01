@@ -13,10 +13,10 @@ import CustomText from "@/components/CustomText";
 import CustomTouchable from "@/components/CustomTouchable";
 import LottieView from "lottie-react-native";
 
-import { fonts } from "../../utils/fonts";
+import { fonts } from "../utils/fonts";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { RootStackParamList } from "../../types";
+import { RootStackParamList } from "../types";
 
 export default function WelcomeScreen() {
   const insets = useSafeAreaInsets();
@@ -47,7 +47,7 @@ export default function WelcomeScreen() {
     let isMounted = true;
     async function loadFonts() {
       await Font.loadAsync({
-        "Outfit-Regular": require("../../../assets/fonts/OutfitMedium.ttf"),
+        "Outfit-Regular": require("../../assets/fonts/OutfitMedium.ttf"),
       });
       if (isMounted) setFontsLoaded(true);
     }
@@ -101,7 +101,7 @@ export default function WelcomeScreen() {
             {loadingPlatform === "Google" ? (
               <>
                 <Image
-                  source={require("../../../assets/google.png")}
+                  source={require("../../assets/google.png")}
                   style={styles.socialIcon}
                 />
                 <CustomText style={styles.socialButtonText}>
@@ -116,7 +116,7 @@ export default function WelcomeScreen() {
             ) : (
               <>
                 <Image
-                  source={require("../../../assets/google.png")}
+                  source={require("../../assets/google.png")}
                   style={styles.socialIcon}
                 />
                 <CustomText style={styles.socialButtonText}>
@@ -132,7 +132,7 @@ export default function WelcomeScreen() {
             {loadingPlatform === "Apple" ? (
               <>
                 <Image
-                  source={require("../../../assets/apple.png")}
+                  source={require("../../assets/apple.png")}
                   style={styles.socialIcon}
                 />
                 <CustomText style={styles.socialButtonText}>
@@ -147,7 +147,7 @@ export default function WelcomeScreen() {
             ) : (
               <>
                 <Image
-                  source={require("../../../assets/apple.png")}
+                  source={require("../../assets/apple.png")}
                   style={styles.socialIcon}
                 />
                 <CustomText style={styles.socialButtonText}>
@@ -163,7 +163,7 @@ export default function WelcomeScreen() {
             {loadingPlatform === "Facebook" ? (
               <>
                 <Image
-                  source={require("../../../assets/facebook.png")}
+                  source={require("../../assets/facebook.png")}
                   style={styles.socialIcon}
                 />
                 <CustomText style={styles.socialButtonText}>
@@ -178,7 +178,7 @@ export default function WelcomeScreen() {
             ) : (
               <>
                 <Image
-                  source={require("../../../assets/facebook.png")}
+                  source={require("../../assets/facebook.png")}
                   style={styles.socialIcon}
                 />
                 <CustomText style={styles.socialButtonText}>

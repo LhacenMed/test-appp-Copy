@@ -11,30 +11,23 @@ import {
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import LocationInputs from "../components/LocationInputs";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import DepBottomSheet, {
-  DepBottomSheetMethods,
-} from "../components/DepBottomSheet";
-import DesBottomSheet, {
-  DesBottomSheetMethods,
-} from "../components/DesBottomSheet";
-import { useTabBar } from "context/TabBarContext";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import LocationSelectionModal from "../components/LocationSelectionModal";
 
 export default function Page() {
-  const { isTabBarVisible, toggleTabBar } = useTabBar();
   const insets = useSafeAreaInsets();
   const [activeInput, setActiveInput] = React.useState<
     "departure" | "destination"
   >("departure");
-  const [bottomSheetVisible, setBottomSheetVisible] = useState(false);
-  const tabBarAnimation = useRef(new Animated.Value(0)).current;
-  const depBottomSheetRef = useRef<DepBottomSheetMethods>(null);
-  const desBottomSheetRef = useRef<DesBottomSheetMethods>(null);
+  const [isLocationModalVisible, setLocationModalVisible] = useState(false);
   const [selectedDepartureCity, setSelectedDepartureCity] = useState<
     string | null
   >(null);
   const [selectedDestinationCity, setSelectedDestinationCity] = useState<
     string | null
   >(null);
+  const [isDatePickerVisible, setDatePickerVisible] = useState(false);
+  const [selectedStartDate, setSelectedStartDate] = useState(new Date());
 
   const onCitySelect = (city: string) => {
     if (activeInput === "departure") {
@@ -50,32 +43,32 @@ export default function Page() {
     }
   };
 
-  const handleBottomSheetExpand = () => {
-    setBottomSheetVisible(true);
-    Animated.timing(tabBarAnimation, {
-      toValue: 1,
-      duration: 300,
-      useNativeDriver: true,
-    }).start();
+  const handleModalOpen = () => {
+    setLocationModalVisible(true);
   };
 
-  const handleBottomSheetClose = () => {
-    setBottomSheetVisible(false);
-    Animated.timing(tabBarAnimation, {
-      toValue: 0,
-      duration: 300,
-      useNativeDriver: true,
-    }).start();
+  const handleModalClose = () => {
+    setLocationModalVisible(false);
   };
 
   const handleDeparturePress = () => {
     setActiveInput("departure");
-    depBottomSheetRef.current?.expand();
+    handleModalOpen();
   };
 
   const handleDestinationPress = () => {
     setActiveInput("destination");
-    desBottomSheetRef.current?.expand();
+    handleModalOpen();
+  };
+
+  const handleDatePress = () => {
+    setDatePickerVisible(true);
+  };
+
+  const onDateChange = (event: any, selectedDate: Date | undefined) => {
+    const currentDate = selectedDate || selectedStartDate;
+    setDatePickerVisible(false);
+    setSelectedStartDate(currentDate);
   };
 
   return (
@@ -142,15 +135,20 @@ export default function Page() {
         selectedDepartureCity={selectedDepartureCity}
         onDestinationPress={handleDestinationPress}
         selectedDestinationCity={selectedDestinationCity}
-        toggleTabBar={toggleTabBar}
-        isTabBarVisible={isTabBarVisible}
       />
 
       {/* Date Selection */}
-      <TouchableOpacity style={styles.dateContainer}>
+      {/* <TouchableOpacity style={styles.dateContainer} onPress={handleDatePress}>
         <View style={styles.dateSection}>
-          <Text style={styles.dateText}>26 Mar</Text>
-          <Text style={styles.dayText}>Wed</Text>
+          <Text style={styles.dateText}>
+            {selectedStartDate.toLocaleString("en-US", {
+              day: "numeric",
+              month: "short",
+            })}
+          </Text>
+          <Text style={styles.dayText}>
+            {selectedStartDate.toLocaleString("en-US", { weekday: "short" })}
+          </Text>
         </View>
         <MaterialIcons
           name="arrow-forward"
@@ -163,6 +161,15 @@ export default function Page() {
           <Text style={styles.dayText}>Wed</Text>
         </View>
       </TouchableOpacity>
+
+      {isDatePickerVisible && (
+        <DateTimePicker
+          value={selectedStartDate}
+          mode="date"
+          display="default"
+          onChange={onDateChange}
+        />
+      )} */}
 
       {/* Travel Details */}
       <View style={styles.detailsContainer}>
@@ -185,36 +192,12 @@ export default function Page() {
         <Text style={styles.searchButtonText}>Search</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity
-        onPress={toggleTabBar}
-        style={{
-          backgroundColor: "#007AFF",
-          borderRadius: 6,
-          marginTop: 20,
-          padding: 10,
-        }}
-      >
-        <Text style={{ color: "#fff" }}>
-          {isTabBarVisible ? "Hide TabBar" : "Show TabBar"}
-        </Text>
-      </TouchableOpacity>
-
-      <DepBottomSheet
-        ref={depBottomSheetRef}
+      {/* Location Selection Modal */}
+      <LocationSelectionModal
+        visible={isLocationModalVisible}
+        onClose={handleModalClose}
         onCitySelect={onCitySelect}
-        onExpand={handleBottomSheetExpand}
-        onClose={handleBottomSheetClose}
-        toggleTabBar={toggleTabBar}
-        isTabBarVisible={isTabBarVisible}
-      />
-
-      <DesBottomSheet
-        ref={desBottomSheetRef}
-        onCitySelect={onCitySelect}
-        onExpand={handleBottomSheetExpand}
-        onClose={handleBottomSheetClose}
-        toggleTabBar={toggleTabBar}
-        isTabBarVisible={isTabBarVisible}
+        type={activeInput}
       />
     </SafeAreaView>
   );

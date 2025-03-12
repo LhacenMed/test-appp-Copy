@@ -1,7 +1,7 @@
 {
     "expo": {
         "name": "AsfarGo",
-        "slug": "asfar-go",
+        "slug": "Firebase-auth-login-app",
         "scheme": "asfar-go",
         "version": "1.0.0",
         "orientation": "portrait",

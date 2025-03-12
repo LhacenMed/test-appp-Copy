@@ -16,8 +16,6 @@ type LocationInputsProps = {
   selectedDepartureCity: string | null;
   onDestinationPress: () => void;
   selectedDestinationCity: string | null;
-  toggleTabBar: () => void;
-  isTabBarVisible: boolean;
 };
 
 const LocationInputs = ({
@@ -25,8 +23,6 @@ const LocationInputs = ({
   selectedDepartureCity,
   onDestinationPress,
   selectedDestinationCity,
-  toggleTabBar,
-  isTabBarVisible,
 }: LocationInputsProps) => {
   const animatedBgFrom = useRef(new Animated.Value(0)).current;
   const animatedBgTo = useRef(new Animated.Value(0)).current;
@@ -112,9 +108,8 @@ const LocationInputs = ({
     const fetchUserApiAddress = async () => {
       setLoading(true);
       try {
-        const storedDepartureCityName = await AsyncStorage.getItem(
-          "departureCityName"
-        );
+        const storedDepartureCityName =
+          await AsyncStorage.getItem("departureCityName");
         const storedDestinationCityName = await AsyncStorage.getItem(
           "destinationCityName"
         );
@@ -170,16 +165,10 @@ const LocationInputs = ({
 
   const handleDepartureInputPress = () => {
     onDeparturePress();
-    if (isTabBarVisible) {
-      toggleTabBar();
-    }
   };
 
   const handleDestinationInputPress = () => {
     onDestinationPress();
-    if (isTabBarVisible) {
-      toggleTabBar();
-    }
   };
 
   return (

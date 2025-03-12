@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import {
   View,
   Text,
@@ -11,15 +11,12 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { FIREBASE_AUTH } from "../../FirebaseConfig";
 import { NavigationProp } from "@react-navigation/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import Animated from "react-native-reanimated";
-import { useTabBar } from "../../context/TabBarContext";
 
 interface RouterProps {
   navigation: NavigationProp<any, any>;
 }
 
 const Page = ({ navigation }: RouterProps) => {
-  const { isTabBarVisible, toggleTabBar } = useTabBar();
   const navigateToSplash = () => {
     navigation.navigate("Splash");
   };
@@ -31,6 +28,9 @@ const Page = ({ navigation }: RouterProps) => {
   };
   const navigateToSettingsScreenTest = () => {
     navigation.navigate("SettingsScreen");
+  };
+  const navigateToTrips = () => {
+    navigation.navigate("TripsScreen");
   };
   const clearOnboarding = async () => {
     try {
@@ -64,6 +64,7 @@ const Page = ({ navigation }: RouterProps) => {
       </View>
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <Text>Explore Screen</Text>
+        <Button onPress={navigateToTrips} title="View My Trips" />
         <Button onPress={navigateToSplash} title="Open splash" />
         <Button onPress={navigateToWelcomeScreen} title="Open welcome screen" />
         <Button
@@ -74,19 +75,6 @@ const Page = ({ navigation }: RouterProps) => {
           onPress={navigateToSettingsScreenTest}
           title="Open Settings screen (test)"
         />
-        <TouchableOpacity
-          onPress={toggleTabBar}
-          style={{
-            backgroundColor: "#007AFF",
-            borderRadius: 6,
-            marginTop: 20,
-            padding: 10,
-          }}
-        >
-          <Text style={{ color: "#fff" }}>
-            {isTabBarVisible ? "Hide TabBar" : "Show TabBar"}
-          </Text>
-        </TouchableOpacity>
         <TouchableOpacity
           onPress={clearOnboarding}
           style={{

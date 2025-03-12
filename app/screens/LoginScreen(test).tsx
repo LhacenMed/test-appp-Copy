@@ -5,10 +5,10 @@ import { FlatList } from "react-native";
 import { OverscrollView } from "react-native-overscroll2";
 
 export default function LoginScreen() {
-  useEffect(() => {
-    NavigationBar.setPositionAsync("absolute");
-    NavigationBar.setBackgroundColorAsync("#ffffff00");
-  }, []);
+  // useEffect(() => {
+  //   NavigationBar.setPositionAsync("absolute");
+  //   NavigationBar.setBackgroundColorAsync("#ffffff00");
+  // }, []);
 
   const data = Array.from({ length: 200 }, (_, i) => `Item ${i + 1}`);
   const renderItem = ({ item }: { item: string }) => <Text>{item}</Text>;

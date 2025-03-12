@@ -7,10 +7,20 @@ import {
   ActivityIndicator,
   StatusBar,
   Alert,
+  Image,
+  RefreshControl,
 } from "react-native";
 import { FIREBASE_DB } from "../../FirebaseConfig";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, doc, getDoc } from "firebase/firestore";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+
+interface Company {
+  id: string;
+  name: string;
+  logoUrl: string;
+  location: string;
+  phone: string;
+}
 
 interface Trip {
   id: string;
@@ -25,17 +35,44 @@ interface Trip {
   seatsAvailable: number;
   seatsBooked: number;
   status: string;
+  company?: Company; // Add company information
 }
 
 const TripsScreen = () => {
   const [trips, setTrips] = useState<Trip[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const insets = useSafeAreaInsets();
 
   useEffect(() => {
     fetchTrips();
   }, []);
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    fetchTrips().finally(() => setRefreshing(false));
+  }, []);
+
+  const fetchCompanyDetails = async (
+    companyId: string
+  ): Promise<Company | null> => {
+    try {
+      const companyRef = doc(FIREBASE_DB, "companies", companyId);
+      const companySnap = await getDoc(companyRef);
+
+      if (companySnap.exists()) {
+        return {
+          id: companySnap.id,
+          ...companySnap.data(),
+        } as Company;
+      }
+      return null;
+    } catch (error) {
+      console.error("Error fetching company:", error);
+      return null;
+    }
+  };
 
   const fetchTrips = async () => {
     try {
@@ -52,13 +89,19 @@ const TripsScreen = () => {
 
       const tripsSnapshot = await getDocs(tripsCollectionRef);
       console.log("Snapshot received:", tripsSnapshot.size, "documents");
-      console.log("First document data:", tripsSnapshot.docs[0]?.data());
 
-      const tripsList = tripsSnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      })) as Trip[];
+      // Fetch trips and their company details
+      const tripsPromises = tripsSnapshot.docs.map(async (doc) => {
+        const tripData = doc.data();
+        const company = await fetchCompanyDetails(tripData.companyId);
+        return {
+          id: doc.id,
+          ...tripData,
+          company,
+        } as Trip;
+      });
 
+      const tripsList = await Promise.all(tripsPromises);
       console.log("Trips processed:", tripsList);
       setTrips(tripsList);
       setError(null);
@@ -71,12 +114,15 @@ const TripsScreen = () => {
       const errorMessage =
         error instanceof Error ? error.message : "Unknown error occurred";
       setError(errorMessage);
-      Alert.alert(
-        "Error",
-        "Failed to fetch trips: " +
-          errorMessage +
-          "\n\nPlease check your internet connection and try again."
-      );
+      if (!refreshing) {
+        // Only show alert if not refreshing
+        Alert.alert(
+          "Error",
+          "Failed to fetch trips: " +
+            errorMessage +
+            "\n\nPlease check your internet connection and try again."
+        );
+      }
     } finally {
       setLoading(false);
     }
@@ -89,7 +135,20 @@ const TripsScreen = () => {
   const renderTripItem = ({ item }: { item: Trip }) => (
     <View style={styles.tripItem}>
       <View style={styles.tripHeader}>
-        <Text style={styles.tripRoute}>{item.route}</Text>
+        <View style={styles.companyInfo}>
+          {item.company?.logoUrl && (
+            <Image
+              source={{ uri: item.company.logoUrl }}
+              style={styles.companyLogo}
+            />
+          )}
+          <View>
+            <Text style={styles.tripRoute}>{item.route}</Text>
+            <Text style={styles.companyName}>
+              {item.company?.name || "Unknown Company"}
+            </Text>
+          </View>
+        </View>
         <Text style={styles.tripPrice}>{formatPrice(item.price)}</Text>
       </View>
       <View style={styles.tripDetails}>
@@ -116,6 +175,10 @@ const TripsScreen = () => {
         <Text style={styles.detailText}>
           <Text style={styles.detailLabel}>Car Type: </Text>
           {item.carType}
+        </Text>
+        <Text style={styles.detailText}>
+          <Text style={styles.detailLabel}>Company Contact: </Text>
+          {item.company?.phone || "N/A"}
         </Text>
       </View>
       <View style={styles.seatsInfo}>
@@ -159,6 +222,16 @@ const TripsScreen = () => {
           renderItem={renderTripItem}
           keyExtractor={(item) => item.id}
           contentContainerStyle={styles.listContainer}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              colors={["#2196F3"]} // Android
+              tintColor="#2196F3" // iOS
+              title="Pull to refresh" // iOS
+              titleColor="#2196F3" // iOS
+            />
+          }
         />
       )}
     </View>
@@ -206,6 +279,23 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     marginBottom: 12,
+  },
+  companyInfo: {
+    flexDirection: "row",
+    alignItems: "center",
+    flex: 1,
+    marginRight: 8,
+  },
+  companyLogo: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    marginRight: 8,
+  },
+  companyName: {
+    fontSize: 14,
+    color: "#666",
+    marginTop: 2,
   },
   tripRoute: {
     fontSize: 18,
